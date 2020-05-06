@@ -5,6 +5,8 @@ Import "log.bmx"
 
 Type TGame
 	
+	Global Instance:TGame
+	
 	Field isRunning:Int
 	
 	Field scenes:TList
@@ -16,6 +18,7 @@ Type TGame
 	Field deltaTimer:TDeltaTimer
 	
 	Method New()
+		Self.Instance = Self
 		Self.scenes = CreateList()
 		Self.deltaTimer = New TDeltaTimer()
 	EndMethod
