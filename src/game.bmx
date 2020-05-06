@@ -9,6 +9,8 @@ Type TGame
 	
 	Field scenes:TList
 	
+	Field currentScene:TScene
+	
 	Field nextScene:TScene
 	
 	Field deltaTimer:TDeltaTimer
@@ -43,10 +45,16 @@ Type TGame
 		Self.isRunning = True
 		While Self.isRunning
 			Local scene:TScene = nextScene
+			Self.currentScene = scene
 			scene.isFinished = False
 			RcgeLogInfo("Initializing scene: " + scene.getName())
 			scene.init()
 			While scene.isFinished = False
+				If AppTerminate()
+					RcgeLogInfo("App terminate request recieved")
+					Self.stop()
+					Exit
+				EndIf
 				Self.deltaTimer.update()
 				scene.update(Self.deltaTimer.deltaTime)
 				Cls()
@@ -57,6 +65,13 @@ Type TGame
 			scene.cleanup()
 		Wend
 		RcgeLogInfo("Exiting game")
+	EndMethod
+	
+	Method stop()
+		If Self.isRunning
+			Self.currentScene.isFinished = True
+			Self.isRunning = False
+		EndIf
 	EndMethod
 	
 EndType
