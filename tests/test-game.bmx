@@ -13,10 +13,7 @@ Type TTestScene Extends TScene
 	EndMethod
 	
 	Method update(deltaTime:Float)
-		If KeyHit(Key_Escape)
-			Self.isFinished = True
-			Self.parent.isRunning = False
-		EndIf
+		If KeyHit(Key_Escape) Then TGame.Instance.stop()
 	EndMethod
 	
 	Method render()
