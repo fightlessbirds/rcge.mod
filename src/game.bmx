@@ -18,22 +18,22 @@ Type TGame
 	Field deltaTimer:TDeltaTimer
 	
 	Method New()
-		Self.Instance = Self
-		Self.scenes = CreateList()
-		Self.deltaTimer = New TDeltaTimer()
+		Instance = Self
+		scenes = CreateList()
+		deltaTimer = New TDeltaTimer()
 	EndMethod
 	
 	Method addScene(scene:TScene)
-		Self.scenes.addLast(scene)
+		scenes.addLast(scene)
 		scene.parent = Self
-		If Self.nextScene = Null Then Self.nextScene = scene
+		If nextScene = Null Then nextScene = scene
 		RcgeLogInfo("Added scene: " + scene.getName())
 	EndMethod
 	
 	Method setNextScene(sceneName:String)
-		For Local scene:TScene = EachIn Self.scenes
+		For Local scene:TScene = EachIn scenes
 			If sceneName = scene.getName()
-				Self.nextScene = scene
+				nextScene = scene
 				RcgeLogInfo("Next scene: " + sceneName)
 				Exit
 			EndIf
@@ -42,24 +42,24 @@ Type TGame
 	
 	Method start()
 		RcgeLogInfo("Starting game")
-		If CountList(Self.scenes) = 0
+		If CountList(scenes) = 0
 			RcgeThrowError("Cannot start game, there are no scenes")
 		EndIf
-		Self.isRunning = True
-		While Self.isRunning
+		isRunning = True
+		While isRunning
 			Local scene:TScene = nextScene
-			Self.currentScene = scene
+			currentScene = scene
 			scene.isFinished = False
 			RcgeLogInfo("Initializing scene: " + scene.getName())
 			scene.init()
 			While scene.isFinished = False
 				If AppTerminate()
 					RcgeLogInfo("App terminate request recieved")
-					Self.stop()
+					stop()
 					Exit
 				EndIf
-				Self.deltaTimer.update()
-				scene.update(Self.deltaTimer.deltaTime)
+				deltaTimer.update()
+				scene.update(deltaTimer.deltaTime)
 				Cls()
 				scene.render()
 				Flip()
@@ -71,9 +71,9 @@ Type TGame
 	EndMethod
 	
 	Method stop()
-		If Self.isRunning
-			Self.currentScene.isFinished = True
-			Self.isRunning = False
+		If isRunning
+			currentScene.isFinished = True
+			isRunning = False
 		EndIf
 	EndMethod
 	

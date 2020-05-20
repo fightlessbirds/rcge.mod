@@ -12,46 +12,46 @@ Type TDeltaTimer
 	Field ElapsedTime:Float = 0.0
 
 	Method New()
-		Self.LastTicks = MilliSecs()
+		LastTicks = MilliSecs()
 	End Method
 
 Rem
 bbdoc: Returns the delta time.
 End Rem
 	Method GetDeltaTime:Float()
-		Return Self.DeltaTime
+		Return DeltaTime
 	End Method
 
 Rem
 bbdoc: Returns the elapsed time in seconds.
 End Rem
 	Method GetElapsedTime:Float()
-		Return Self.ElapsedTime
+		Return ElapsedTime
 	End Method
 	
 Rem
 bbdoc: Returns the elapsed delta time in seconds.
 End Rem
 	Method GetElapsedDelta:Float()
-		Return Self.ElapsedDelta
+		Return ElapsedDelta
 	End Method
 
 Rem
 bbdoc: Returns the elapsed frame time in ms.
 End Rem
 	Method GetFrameTime:Float()
-		Return Self.FrameTime
+		Return FrameTime
 	End Method
 
 	Method Resume:Int()
-		Self.LastTicks = MilliSecs()
+		LastTicks = MilliSecs()
 	End Method
 	
 Rem
 bbdoc: Returns the target frames per second.
 End Rem
 	Method GetTargetFPS:Int()
-		Return Self.TargetFPS
+		Return TargetFPS
 	End Method
 	
 Rem
@@ -65,7 +65,7 @@ Rem
 bbdoc: Returns the Current time scale.
 End Rem
 	Method GetTimeScale:Float()
-		Return Self.TimeScale
+		Return TimeScale
 	End Method
 	
 Rem
@@ -80,11 +80,11 @@ bbdoc: Updates the timers.
 about: Call this when your application needs To update itself.
 End Rem
 	Method Update:Int()
-		Self.FrameTime = MilliSecs() - Self.LastTicks
-		Self.LastTicks = MilliSecs()
-		Self.ElapsedTime = Self.ElapsedTime + Self.FrameTime
-		Self.DeltaTime = Self.FrameTime / (1000.0 / Self.TargetFPS) * Self.TimeScale
-		Self.ElapsedDelta = Self.ElapsedDelta + (Self.DeltaTime / Self.TargetFPS)
+		FrameTime = MilliSecs() - LastTicks
+		LastTicks = MilliSecs()
+		ElapsedTime = ElapsedTime + FrameTime
+		DeltaTime = FrameTime / (1000.0 / TargetFPS) * TimeScale
+		ElapsedDelta = ElapsedDelta + (DeltaTime / TargetFPS)
 	End Method
 
 End Type
