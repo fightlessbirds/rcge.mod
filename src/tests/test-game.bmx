@@ -1,6 +1,9 @@
 SuperStrict
 
-Import "../src/game.bmx"
+'Framework BRL.Max2D
+'Game is crashing in Framework mode :(
+
+Import rcge.game
 
 Type TTestScene Extends TScene
 

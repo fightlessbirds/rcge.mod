@@ -1,7 +1,13 @@
 SuperStrict
 
-Import "deltatimer.bmx"
-Import "log.bmx"
+Module rcge.game
+
+Import BRL.LinkedList
+Import BRL.Max2D
+Import BRL.Graphics
+
+Import rcge.deltatimer
+Import rcge.log
 
 Type TGame
 	

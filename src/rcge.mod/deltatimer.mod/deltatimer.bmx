@@ -1,5 +1,7 @@
 SuperStrict
 
+Module rcge.deltatimer
+
 Type TDeltaTimer
 
 	Field TargetFPS:Float = 60

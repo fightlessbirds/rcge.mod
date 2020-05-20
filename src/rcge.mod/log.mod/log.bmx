@@ -1,5 +1,10 @@
 SuperStrict
 
+Module rcge.log
+
+Import BRL.StandardIO
+Import BRL.StringBuilder
+
 Global Rcge_GameStartTime:Int = MilliSecs()
 
 Function RcgeTimestampConvert:TStringBuilder(timeMilliseconds:Int)
