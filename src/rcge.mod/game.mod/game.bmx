@@ -15,18 +15,16 @@ Type TGame
 	
 	Field isRunning:Int
 	
-	Field scenes:TList
+	Field scenes:TList = New TList()
 	
 	Field currentScene:TScene
 	
 	Field nextScene:TScene
 	
-	Field deltaTimer:TDeltaTimer
+	Field deltaTimer:TDeltaTimer = New TDeltaTimer()
 	
 	Method New()
 		Instance = Self
-		scenes = CreateList()
-		deltaTimer = New TDeltaTimer()
 	EndMethod
 	
 	Method addScene(scene:TScene)
