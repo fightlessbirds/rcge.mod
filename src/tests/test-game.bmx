@@ -1,7 +1,10 @@
 SuperStrict
 
-'Framework BRL.Max2D
-'Game is crashing in Framework mode :(
+?win32
+Framework SDL.d3d9sdlmax2d
+?Not win32
+Framework SDL.gl2sdlmax2d
+?
 
 Import rcge.game
 
