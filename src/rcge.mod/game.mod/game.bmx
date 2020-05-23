@@ -34,34 +34,34 @@ Type TGame
 		scenes.addLast(scene)
 		scene.parent = Self
 		If nextScene = Null Then nextScene = scene
-		RcgeLogInfo("Added scene: " + scene.getName())
+		LogInfo("Added scene: " + scene.getName())
 	EndMethod
 	
 	Method setNextScene(sceneName:String)
 		For Local scene:TScene = EachIn scenes
 			If sceneName = scene.getName()
 				nextScene = scene
-				RcgeLogInfo("Next scene: " + sceneName)
+				LogInfo("Next scene: " + sceneName)
 				Exit
 			EndIf
 		Next
 	EndMethod
 	
 	Method start()
-		RcgeLogInfo("Starting game")
+		LogInfo("Starting game")
 		If CountList(scenes) = 0
-			RcgeThrowError("Cannot start game, there are no scenes")
+			ThrowError("Cannot start game, there are no scenes")
 		EndIf
 		isRunning = True
 		While isRunning
 			Local scene:TScene = nextScene
 			currentScene = scene
 			scene.isFinished = False
-			RcgeLogInfo("Initializing scene: " + scene.getName())
+			LogInfo("Initializing scene: " + scene.getName())
 			scene.init()
 			While scene.isFinished = False
 				If AppTerminate()
-					RcgeLogInfo("App terminate request recieved")
+					LogInfo("App terminate request recieved")
 					stop()
 					Exit
 				EndIf
@@ -71,10 +71,10 @@ Type TGame
 				scene.render()
 				Flip()
 			Wend
-			RcgeLogInfo("Cleaning up scene: " + scene.getName())
+			LogInfo("Cleaning up scene: " + scene.getName())
 			scene.cleanup()
 		Wend
-		RcgeLogInfo("Exiting game")
+		LogInfo("Exiting game")
 	EndMethod
 	
 	Method stop()

@@ -40,7 +40,7 @@ EndType
 Type TKillSystem Extends TSystem
 	Method update(e:TEntity)
 		If MouseHit(1)
-			RcgeLogInfo("Mouse button pressed, killing test entity")
+			LogInfo("Mouse button pressed, killing test entity")
 			e.kill()
 		EndIf
 	EndMethod
