@@ -67,9 +67,9 @@ Type TGame
 					stop()
 					Exit
 				EndIf
+				Cls()
 				deltaTimer.update()
 				scene.update(deltaTimer.deltaTime)
-				Cls()
 				scene.render()
 				Flip()
 			Wend
