@@ -19,7 +19,7 @@ Type TTestScene Extends TScene
 	EndMethod
 	
 	Method update(deltaTime:Float)
-		If KeyHit(Key_Escape) Then TGame.Instance.stop()
+		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 	EndMethod
 	
 	Method render()
@@ -32,6 +32,6 @@ Type TTestScene Extends TScene
 
 EndType
 
-Local myGame:TGame = New TGame()
+Local myGame:TGame = CreateGame()
 myGame.addScene(New TTestScene())
 StartGame(myGame, 800, 600)

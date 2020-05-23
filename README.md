@@ -16,7 +16,7 @@ Type TMyScene Extends TScene
 	EndMethod
 	
 	Method update(dt:Float)
-		If KeyHit(Key_Escape) Then TGame.Instance.stop()
+		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 	EndMethod
 	
 	Method render()

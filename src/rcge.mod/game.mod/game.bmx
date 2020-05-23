@@ -9,9 +9,15 @@ Import BRL.Graphics
 Import rcge.deltatimer
 Import rcge.log
 
+Function CreateGame:TGame()
+	Return New TGame()
+EndFunction
+
 Type TGame
 	
-	Global Instance:TGame
+	Function GetInstance:TGame()
+		Return Instance
+	EndFunction
 	
 	Field isRunning:Int
 	
@@ -22,13 +28,6 @@ Type TGame
 	Field nextScene:TScene
 	
 	Field deltaTimer:TDeltaTimer = New TDeltaTimer()
-	
-	Method New()
-		If Instance = Null
-		Instance = Self
-		EndIf
-		Return Instance
-	EndMethod
 	
 	Method addScene(scene:TScene)
 		scenes.addLast(scene)
@@ -84,6 +83,16 @@ Type TGame
 		EndIf
 	EndMethod
 	
+Protected
+	
+	Global Instance:TGame
+	
+	Method New()
+		If Instance = Null
+			Instance = Self
+		EndIf
+	EndMethod
+
 EndType
 
 Type TScene Abstract
