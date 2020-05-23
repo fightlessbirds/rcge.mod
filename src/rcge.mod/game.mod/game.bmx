@@ -24,7 +24,10 @@ Type TGame
 	Field deltaTimer:TDeltaTimer = New TDeltaTimer()
 	
 	Method New()
+		If Instance = Null
 		Instance = Self
+		EndIf
+		Return Instance
 	EndMethod
 	
 	Method addScene(scene:TScene)
