@@ -10,7 +10,10 @@ Import rcge.deltatimer
 Import rcge.log
 
 Function CreateGame:TGame()
-	Return New TGame()
+	If TGame.Instance = Null
+		Return New TGame()
+	EndIf
+	Return TGame.Instance
 EndFunction
 
 Type TGame
