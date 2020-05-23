@@ -28,7 +28,7 @@ Type TMyScene Extends TScene
 
 EndType
 
-Local myGame:TGame = New TGame()
+Local myGame:TGame = CreateGame()
 myGame.addScene(New TMyScene())
 StartGame(myGame, 800, 600)
 ```
