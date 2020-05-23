@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/.bmx/**": true,
+        "**/*.debug.win32.*": true,
+        "**/*.exe": true
+    }
+}
