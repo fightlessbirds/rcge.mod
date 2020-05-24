@@ -1,5 +1,8 @@
 *.bak
 *.exe
-*/.bmx*
+.bmx/
 *.debug.win32.*
+*.release.win32.*
+*.bmx.bak
 *.dia~
+*doc/

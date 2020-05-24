@@ -1,4 +1,4 @@
-# rcge
+# RCGE
 Random Cruft Game Engine - A BlitzMax game framework
 
 ### Usage Example
