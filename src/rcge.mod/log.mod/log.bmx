@@ -13,12 +13,20 @@ Function LogInfo(msg:String)
 	Print(logStringBuilder.toString())
 EndFunction
 
-Function ThrowError(err:String)
+Function LogWarn(msg:String)
+	Local uptime:Int = MilliSecs() - Rcge_GameStartTime
+	Local logStringBuilder:TStringBuilder = TimestampConvert(uptime)
+	logStringBuilder.append(" [WARN] ")
+	logStringBuilder.append(msg)
+	Print(logStringBuilder.toString())
+EndFunction
+
+Function LogError(err:String)
 	Local uptime:Int = MilliSecs() - Rcge_GameStartTime
 	Local logStringBuilder:TStringBuilder = TimestampConvert(uptime)
 	logStringBuilder.append(" [ERROR] ")
 	logStringBuilder.append(err)
-	Throw(logStringBuilder.toString())
+	Print(logStringBuilder.toString())
 EndFunction
 
 Private

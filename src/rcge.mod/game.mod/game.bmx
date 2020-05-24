@@ -19,7 +19,12 @@ EndFunction
 Type TGame
 	
 	Function GetInstance:TGame()
-		Return Instance
+		If Instance
+			Return Instance
+		Else
+			TGame.Instance = New TGame()
+			Return TGame.Instance
+		EndIf
 	EndFunction
 	
 	Field isRunning:Int
@@ -52,7 +57,8 @@ Type TGame
 	Method start()
 		LogInfo("Starting game")
 		If CountList(scenes) = 0
-			ThrowError("Cannot start game, there are no scenes")
+			LogError("Cannot start game, there are no scenes")
+			Return
 		EndIf
 		isRunning = True
 		While isRunning
@@ -60,21 +66,26 @@ Type TGame
 			currentScene = scene
 			scene.isFinished = False
 			LogInfo("Initializing scene: " + scene.getName())
-			scene.init()
-			While scene.isFinished = False
-				If AppTerminate()
-					LogInfo("App terminate request recieved")
-					stop()
-					Exit
-				EndIf
-				Cls()
-				deltaTimer.update()
-				scene.update(deltaTimer.deltaTime)
-				scene.render()
-				Flip()
-			Wend
-			LogInfo("Cleaning up scene: " + scene.getName())
-			scene.cleanup()
+			Try
+				scene.init()
+				While scene.isFinished = False
+					If AppTerminate()
+						LogInfo("App terminate request recieved")
+						stop()
+						Exit
+					EndIf
+					Cls()
+					deltaTimer.update()
+					scene.update(deltaTimer.deltaTime)
+					scene.render()
+					Flip()
+				Wend
+				LogInfo("Cleaning up scene: " + scene.getName())
+				scene.cleanup()
+			Catch ex:Object
+				LogError(ex.toString())
+				Return
+			EndTry
 		Wend
 		LogInfo("Exiting game")
 	EndMethod
@@ -86,7 +97,7 @@ Type TGame
 		EndIf
 	EndMethod
 	
-Protected
+Private
 	
 	Global Instance:TGame
 	
