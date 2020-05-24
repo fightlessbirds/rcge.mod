@@ -10,74 +10,84 @@ Import rcge.game
 Import rcge.ecs
 Import rcge.log
 
-Type c_Position Extends TComponent
+Global TEST_ARCHETYPE:String[] = ["TPosition"]
+
+Type TPosition
 	
 	Field x:Float
 	Field y:Float
 	
-	Method getName:String()
-		Return "Position"
-	EndMethod
-	
 EndType
 
 Type TMoveSystem Extends TSystem
-	Method update(e:TEntity)
-		Local pos:c_Position = c_Position(e.getComponent("Position"))
+	
+	Method update(e:TEntity, deltaTime:Float)
+		Local pos:TPosition = TPosition(e.getComponent("TPosition"))
 		pos.x = MouseX()
 		pos.y = MouseY()
 	EndMethod
-EndType
-
-Type TDrawSystem Extends TSystem
-	Method update(e:TEntity)
-		Local pos:c_Position = c_Position(e.getComponent("Position"))
-		SetColor(255, 0, 0)
-		DrawRect(pos.x, pos.y, 50, 50)
-	EndMethod
+	
+	Function getArchetype:String[]()
+		Return TEST_ARCHETYPE
+	EndFunction
+	
 EndType
 
 Type TKillSystem Extends TSystem
-	Method update(e:TEntity)
+	
+	Method update(e:TEntity, deltaTime:Float)
 		If MouseHit(1)
 			LogInfo("Mouse button pressed, killing test entity")
 			e.kill()
 		EndIf
 	EndMethod
+	
+	Function getArchetype:String[]()
+		Return TEST_ARCHETYPE
+	EndFunction
+	
+EndType
+
+Type TDrawSystem Extends TSystem
+	
+	Method update(e:TEntity, deltaTime:Float)
+		Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+		SetColor(255, 0, 0)
+		DrawRect(pos.x, pos.y, 50, 50)
+	EndMethod
+	
+	Function getArchetype:String[]()
+		Return TEST_ARCHETYPE
+	EndFunction
+	
 EndType
 
 Type TTestScene Extends TScene
 	
-	Field moveSystem:TMoveSystem = New TMoveSystem()
-	Field drawSystem:TDrawSystem = New TDrawSystem()
-	Field killSystem:TKillSystem = New TKillSystem()
-	
-	Field testEntityId:Int
-	
+	Field ecs:TEcs = New TEcs()
+		
 	Method getName:String()
 		Return "ecs test scene"
 	EndMethod
 
 	Method init()
-		Local components:TList = New TList()
-		components.addLast(New c_Position())
-		testEntityId = TEntity.CreateEntity(components)
+		
+		ecs.addComponentType("TPosition")
+		
+		ecs.addSystem(New TMoveSystem())
+		ecs.addSystem(New TKillSystem())
+		ecs.addSystem(New TDrawSystem())
+
+		ecs.createEntity(TEST_ARCHETYPE)
 	EndMethod
 	
 	Method update(deltaTime:Float)
-		If KeyHit(Key_Escape) Then TGame.Instance.stop()
-		Local e:TEntity = TEntity.GetEntity(testEntityId)
-		If e
-			moveSystem.update(e)
-			killSystem.update(e)
-		EndIf
+		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
+		ecs.update(deltaTime)
 	EndMethod
 	
 	Method render()
-		Local e:TEntity = TEntity.GetEntity(testEntityId)
-		If e
-			drawSystem.update(e)
-		EndIf
+		'  ¯\_(ツ)_/¯
 	EndMethod
 	
 	Method cleanup()
@@ -85,6 +95,6 @@ Type TTestScene Extends TScene
 
 EndType
 
-Local myGame:TGame = New TGame()
+Local myGame:TGame = CreateGame()
 myGame.addScene(New TTestScene())
 StartGame(myGame, 800, 600)
