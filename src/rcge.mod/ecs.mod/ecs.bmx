@@ -23,7 +23,7 @@ Import BRL.Map
 Import BRL.Reflection
 
 Rem
-bbdoc: Main ECS class
+bbdoc: ECS class
 about:
 EndRem
 Type TEcs
@@ -210,7 +210,7 @@ Private
 EndType
 
 Rem
-bbdoc: Entity class.
+bbdoc: Entity class
 about: Entities hold no data or functionality. They are essentially a unique identifier
 	for a collection of components.
 EndRem
@@ -287,7 +287,7 @@ Private
 EndType
 
 Rem
-bbdoc: System base class.
+bbdoc: System base class
 about: Systems hold the logic that is applied to an archetype.
 EndRem
 Type TSystem Abstract

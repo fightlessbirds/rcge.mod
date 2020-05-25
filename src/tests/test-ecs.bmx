@@ -95,6 +95,6 @@ Type TTestScene Extends TScene
 
 EndType
 
-Local myGame:TGame = CreateGame()
-myGame.addScene(New TTestScene())
-StartGame(myGame, 800, 600)
+Local myGame:TGame = TGame.CreateGame(800, 600)
+myGame.addScene("TTestScene")
+myGame.start()
