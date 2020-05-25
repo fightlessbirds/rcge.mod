@@ -64,29 +64,29 @@ Type TEcs
 	
 	Rem
 	bbdoc: Create an empty entity.
-	returns: ID of the new entity.
+	returns: The new entity object.
 	about: 
 	EndRem
-	Method createEntity:Int()
+	Method createEntity:TEntity()
 		Local e:TEntity = New TEntity(nextEntityId, Self)
 		nextEntityId :+ 1
-		Local id:Int = e.id
-		entities.insert(id, e)
-		Return id
+		entities.insert(e.id, e)
+		Return e
 	EndMethod
 	
 	Rem
 	bbdoc: Create an entity from an archetype.
-	returns: ID of the new entity.
+	returns: The new entity object.
 	about: @archetype is an array of component type names.
-		The entity will be assembled with these components
+		The entity will be assembled with these components.<br>
+		Throws an exception if any of the components in @archetype can't be found.
 	EndRem
-	Method createEntity:Int(archetype:String[])
-		Local id:Int = createEntity()
+	Method createEntity:TEntity(archetype:String[])
+		Local e:TEntity = createEntity()
 		For Local cName:String = EachIn archetype
-			bind(id, cName)
+			bind(e.id, cName)
 		Next
-		Return id
+		Return e
 	EndMethod
 	
 	Rem
@@ -101,14 +101,16 @@ Type TEcs
 	
 	Rem
 	bbdoc: Add a component to an entity.
+	returns: The newly added component object.
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
-	Method bind(entityId:Int, cName:String)
+	Method bind:Object(entityId:Int, cName:String)
 		Local e:TEntity = getEntity(entityId)
 		Local c:Object = createComponent(cName)
 		e.addComponent(c)
 		Local relationship:TIntMap = getRelationship(cName)
 		relationship.insert(entityId, e)
+		Return c
 	EndMethod
 	
 	Rem
@@ -166,13 +168,17 @@ Type TEcs
 	EndRem
 	Method update(deltaTime:Float)
 		For Local s:TSystem = EachIn systems
-			Local archetype:String[] = s.GetArchetype()
-			Local entities:TList = query(archetype)
-			If entities
-				For Local e:TEntity = EachIn entities
-					s.update(e, deltaTime)
-				Next
-			EndIf
+			Try
+				Local archetype:String[] = s.GetArchetype()
+				Local entities:TList = query(archetype)
+				If entities
+					For Local e:TEntity = EachIn entities
+						s.Update(e, deltaTime)
+					Next
+				EndIf
+			Catch ex:Object
+				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
+			EndTry
 		Next
 	EndMethod
 	
@@ -234,6 +240,22 @@ Type TEntity
 			Throw("TEcs.getComponent(): Could not get component " + cName + " from entity " + id)
 		EndIf
 		Return c
+	EndMethod
+	
+	Rem
+	bbdoc: Add a component to the entity.
+	about: Throws an exception if there is no component for @cName.
+	EndRem
+	Method bind:Object(cName:String)
+		Return ecs.bind(id, cName)
+	EndMethod
+	
+	Rem
+	bbdoc: Remove a component from the entity.
+	about: Throws an exception if there is no component for @cName.
+	EndRem
+	Method unbind(cName:String)
+		ecs.unbind(id, cName)
 	EndMethod
 	
 	Rem
@@ -303,6 +325,6 @@ Type TSystem Abstract
 	bbdoc: Update an entity.
 	about: Override this method and put logic inside.
 	EndRem
-	Method update(entity:TEntity, deltaTime:Float) Abstract
+	Function Update(entity:TEntity, deltaTime:Float) Abstract
 
 EndType
