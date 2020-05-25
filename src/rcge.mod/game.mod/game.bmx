@@ -107,6 +107,8 @@ Type TGame
 			LogInfo("Initializing scene: " + TTypeId.ForObject(scene).name())
 			Try
 				scene.init()
+				'Update deltaTimer between scene switches to avoid inflating deltaTime
+				deltaTimer.update()
 				While scene.isFinished = False
 					If AppTerminate()
 						LogInfo("App terminate request recieved")
