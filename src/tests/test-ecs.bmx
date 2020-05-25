@@ -27,7 +27,7 @@ Type TMoveSystem Extends TSystem
 		pos.y = MouseY()
 	EndFunction
 	
-	Function getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return TEST_ARCHETYPE
 	EndFunction
 	
@@ -42,7 +42,7 @@ Type TKillSystem Extends TSystem
 		EndIf
 	EndFunction
 	
-	Function getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return TEST_ARCHETYPE
 	EndFunction
 	
@@ -56,7 +56,7 @@ Type TDrawSystem Extends TSystem
 		DrawRect(pos.x, pos.y, 50, 50)
 	EndFunction
 	
-	Function getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return TEST_ARCHETYPE
 	EndFunction
 	
