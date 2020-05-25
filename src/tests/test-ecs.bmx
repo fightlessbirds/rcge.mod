@@ -65,11 +65,7 @@ EndType
 Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
-		
-	Method getName:String()
-		Return "ecs test scene"
-	EndMethod
-
+	
 	Method init()
 		
 		ecs.addComponentType("TPosition")
