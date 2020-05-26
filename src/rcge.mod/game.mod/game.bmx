@@ -117,7 +117,7 @@ Type TGame
 					EndIf
 					Cls()
 					deltaTimer.update()
-					scene.update(deltaTimer.deltaTime)
+					scene.update(deltaTimer.frameTime)
 					scene.render()
 					Flip()
 				Wend
@@ -188,10 +188,7 @@ Type TScene Abstract
 	
 	Rem
 	bbdoc: Update the scene.
-	returns: Some stuff
-	about:
-	This function is just an example
-	Pass @someText a string
+	about: @deltaTime is the number of milliseconds since last update.
 	EndRem
 	Method update(deltaTime:Float) Abstract
 	
