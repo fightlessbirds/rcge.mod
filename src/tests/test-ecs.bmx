@@ -10,13 +10,16 @@ Import rcge.game
 Import rcge.ecs
 Import rcge.log
 
-Global TEST_ARCHETYPE:String[] = ["TPosition"]
+Global TEST_ARCHETYPE:String[] = ["TPosition", "TKillTag"]
 
 Type TPosition
 	
 	Field x:Float
 	Field y:Float
 	
+EndType
+
+Type TKillTag
 EndType
 
 Type TMoveSystem Extends TSystem
@@ -28,7 +31,7 @@ Type TMoveSystem Extends TSystem
 	EndFunction
 	
 	Function GetArchetype:String[]()
-		Return TEST_ARCHETYPE
+		Return ["TPosition"]
 	EndFunction
 	
 EndType
@@ -43,7 +46,7 @@ Type TKillSystem Extends TSystem
 	EndFunction
 	
 	Function GetArchetype:String[]()
-		Return TEST_ARCHETYPE
+		Return ["TKillTag"]
 	EndFunction
 	
 EndType
@@ -57,7 +60,7 @@ Type TDrawSystem Extends TSystem
 	EndFunction
 	
 	Function GetArchetype:String[]()
-		Return TEST_ARCHETYPE
+		Return ["TPosition"]
 	EndFunction
 	
 EndType
@@ -69,10 +72,11 @@ Type TTestScene Extends TScene
 	Method init()
 		
 		ecs.addComponentType("TPosition")
+		ecs.addComponentType("TKillTag")
 		
 		ecs.addSystem(New TMoveSystem())
-		ecs.addSystem(New TKillSystem())
 		ecs.addSystem(New TDrawSystem())
+		ecs.addSystem(New TKillSystem())
 
 		ecs.createEntity(TEST_ARCHETYPE)
 	EndMethod

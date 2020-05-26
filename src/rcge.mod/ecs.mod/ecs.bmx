@@ -6,11 +6,12 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.2.0"
+ModuleInfo "Version: 0.2.1"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: Fixed a bug with query() being too strict, added new method queryStrict() as a side-effect."
 ModuleInfo "History: 0.2.0"
 ModuleInfo "History: Able to query for entities by their constituent components."
 ModuleInfo "History: Entities can by constructed from an Archetype which is a set of component types."
@@ -105,10 +106,11 @@ Type TEcs
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method bind:Object(entityId:Int, cName:String)
+		DebugStop()
 		Local e:TEntity = getEntity(entityId)
-		Local c:Object = createComponent(cName)
-		e.addComponent(c)
-		Local relationship:TIntMap = getRelationship(cName)
+		Local c:Object = TTypeId(componentTypes.valueForKey(cName)).newObject()
+		e.components.insert(cName, c)
+		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
 		relationship.insert(entityId, e)
 		Return c
 	EndMethod
@@ -118,19 +120,22 @@ Type TEcs
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method unbind(entityId:Int, cName:String)
+		DebugStop()
 		Local e:TEntity = getEntity(entityId)
-		e.removeComponent(cName)
-		Local relationship:TIntMap = getRelationship(cName)
+		e.components.remove(cName)
+		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
 		relationship.remove(e.id)
 	EndMethod
 	
 	Rem
 	bbdoc: Get a list of entities with a certain component.
-	returns: Null if there are no entities with this component.
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method query:TList(cName:String)
-		Local relationship:TIntMap = getRelationship(cName)
+		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
+		If relationship = Null
+			Throw("TEcs.query(): Undefined component " + cName)
+		EndIf
 		Local resultList:TList = New TList()
 		For Local e:TEntity = EachIn relationship.values()
 			resultList.addLast(e)
@@ -140,19 +145,43 @@ Type TEcs
 	
 	Rem
 	bbdoc: Get a list of entities matching an archetype.
-	returns: Null if there are no entities with this archetype.
 	about: Throws an exception if any of the component types in @archetype are missing from the ECS.
 	EndRem
 	Method query:TList(archetype:String[])
 		Local componentCount:Int = Len(archetype)
 		If componentCount = 0
-			Return Null
+			Return New TList()
 		ElseIf componentCount = 1
 			Return query(archetype[0])
 		EndIf
 		Local resultList:TList = query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
-			Local relationship:TIntMap = getRelationship(archetype[i])
+			Local listB:TList = query(archetype[i])
+			For Local e:TEntity = EachIn listB
+				If Not resultList.contains(e) Then resultList.addLast(e)
+			Next
+		Next
+		Return resultList
+	EndMethod
+	
+	Rem
+	bbdoc: Get a list of entities strictly matching an archetype. Any entities with extra
+		components will be excluded from the results.
+	about: Throws an exception if any of the component types in @archetype are missing from the ECS.
+	EndRem
+	Method queryStrict:TList(archetype:String[])
+		Local componentCount:Int = Len(archetype)
+		If componentCount = 0
+			Return New TList()
+		ElseIf componentCount = 1
+			Return query(archetype[0])
+		EndIf
+		Local resultList:TList = query(archetype[0])
+		For Local i:Int = 1 Until Len(archetype)
+			Local relationship:TIntMap = TIntMap(relationships.valueForKey(archetype[i]))
+			If relationship = Null
+				Throw("TEcs.queryStrict(): Undefined component " + archetype[i])
+			EndIf
 			For Local e:TEntity = EachIn resultList
 				If Not relationship.contains(e.id)
 					resultList.remove(e)
@@ -186,7 +215,7 @@ Private
 	
 	Field entities:TIntMap = New TIntMap()
 	
-	Field nextEntityId:Int = 0
+	Field nextEntityId:Int = 1
 	
 	Field componentTypes:TStringMap = New TStringMap()
 	
@@ -194,24 +223,6 @@ Private
 	Field relationships:TStringMap = New TStringMap()
 	
 	Field systems:TList = New TList()
-	
-	'Convenience method for safely creating a component object.
-	Method createComponent:Object(cName:String)
-		Local cType:TTypeId = TTypeId(componentTypes.valueForKey(cName))
-		If cType = Null
-			Throw("TEcs.bind(): Attempted to bind unknown component " + cName)
-		EndIf
-		Return cType.newObject()
-	EndMethod
-	
-	'Convenience method for safely retrieving a relationship.
-	Method getRelationship:TIntMap(cName:String)
-		Local r:TIntMap = TIntMap(relationships.valueForKey(cName))
-		If r = Null
-			Throw("TEcs.getRelationship(): Unknown component " + cName)
-		EndIf
-		Return r
-	EndMethod
 
 EndType
 
@@ -295,15 +306,6 @@ Private
 	Method New(id:Int, ecs:TEcs)
 		Self.id = id
 		Self.ecs = ecs
-	EndMethod
-	
-	Method addComponent(c:Object)
-		Local cName:String = TTypeId.ForObject(c).name()
-		components.insert(cName, c)
-	EndMethod
-	
-	Method removeComponent(cName:String)
-		components.remove(cName)
 	EndMethod
 
 EndType
