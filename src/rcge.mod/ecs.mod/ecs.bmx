@@ -165,9 +165,9 @@ Type TEcs
 	EndMethod
 	
 	Rem
-	bbdoc: Get a list of entities strictly matching an archetype. Any entities with extra
-		components will be excluded from the results.
-	about: Throws an exception if any of the component types in @archetype are missing from the ECS.
+	bbdoc: Get a list of entities strictly matching an archetype.
+	about: Any entities with extra components will be excluded from the results.
+		Throws an exception if any of the component types in @archetype are missing from the ECS.
 	EndRem
 	Method queryStrict:TList(archetype:String[])
 		Local componentCount:Int = Len(archetype)
