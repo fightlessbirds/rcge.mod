@@ -24,10 +24,12 @@ EndType
 
 Type TMoveSystem Extends TSystem
 	
-	Function Update(e:TEntity, deltaTime:Float)
-		Local pos:TPosition = TPosition(e.getComponent("TPosition"))
-		pos.x = MouseX()
-		pos.y = MouseY()
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+			pos.x = MouseX()
+			pos.y = MouseY()
+		Next
 	EndFunction
 	
 	Function GetArchetype:String[]()
@@ -38,11 +40,13 @@ EndType
 
 Type TKillSystem Extends TSystem
 	
-	Function Update(e:TEntity, deltaTime:Float)
-		If MouseHit(1)
-			LogInfo("Mouse button pressed, killing test entity")
-			e.kill()
-		EndIf
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			If MouseHit(1)
+				LogInfo("Mouse button pressed, killing test entity")
+				e.kill()
+			EndIf
+		Next
 	EndFunction
 	
 	Function GetArchetype:String[]()
@@ -53,10 +57,12 @@ EndType
 
 Type TDrawSystem Extends TSystem
 	
-	Function Update(e:TEntity, deltaTime:Float)
-		Local pos:TPosition = TPosition(e.getComponent("TPosition"))
-		SetColor(255, 0, 0)
-		DrawRect(pos.x, pos.y, 50, 50)
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+			SetColor(255, 0, 0)
+			DrawRect(pos.x, pos.y, 50, 50)
+		Next
 	EndFunction
 	
 	Function GetArchetype:String[]()

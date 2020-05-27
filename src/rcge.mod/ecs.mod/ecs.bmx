@@ -6,11 +6,13 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.2.1"
+ModuleInfo "Version: 0.2.2"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: Systems can be standalone and operate once per loop without entities."
+ModuleInfo "History: Wait until update is finished before removing dead entities."
 ModuleInfo "History: Fixed a bug with query() being too strict, added new method queryStrict() as a side-effect."
 ModuleInfo "History: 0.2.0"
 ModuleInfo "History: Able to query for entities by their constituent components."
@@ -38,12 +40,12 @@ Type TEcs
 			Throw("TEcs.addSystem(): Null argument")
 		EndIf
 		Local sType:TTypeId = TTypeId.ForObject(s)
-		For Local i:TSystem = EachIn systems
+		For Local i:TSystem = EachIn _systems
 			If TTypeId.ForObject(i) = sType
 				Throw("TEcs.addSystem(): Cannot add duplicate system " + sType.name())
 			EndIf
 		Next
-		systems.addLast(s)
+		_systems.addLast(s)
 	EndMethod
 	
 	Rem
@@ -56,11 +58,11 @@ Type TEcs
 		If cType = Null
 			Throw("TEcs.addComponentType(): Could not get TTypeId for component name " + cName)
 		EndIf
-		If componentTypes.contains(cName)
+		If _componentTypes.contains(cName)
 			Throw("TEcs.addComponentType(): Cannot add duplicate component type")
 		EndIf
-		componentTypes.insert(cName, cType)
-		relationships.insert(cName, New TIntMap())
+		_componentTypes.insert(cName, cType)
+		_relationships.insert(cName, New TIntMap())
 	EndMethod
 	
 	Rem
@@ -69,9 +71,9 @@ Type TEcs
 	about: 
 	EndRem
 	Method createEntity:TEntity()
-		Local e:TEntity = New TEntity(nextEntityId, Self)
-		nextEntityId :+ 1
-		entities.insert(e.id, e)
+		Local e:TEntity = New TEntity(_nextEntityId, Self)
+		_nextEntityId :+ 1
+		_entities.insert(e._id, e)
 		Return e
 	EndMethod
 	
@@ -85,7 +87,7 @@ Type TEcs
 	Method createEntity:TEntity(archetype:String[])
 		Local e:TEntity = createEntity()
 		For Local cName:String = EachIn archetype
-			bind(e.id, cName)
+			bind(e._id, cName)
 		Next
 		Return e
 	EndMethod
@@ -95,7 +97,7 @@ Type TEcs
 	returns: The entity object for @id.
 	EndRem
 	Method getEntity:TEntity(id:Int)
-		Local e:TEntity = TEntity(entities.valueForKey(id))
+		Local e:TEntity = TEntity(_entities.valueForKey(id))
 		If e Then Return e
 		Throw("Ecs.getEntity(): Could not find entity with id " + id)
 	EndMethod
@@ -106,11 +108,10 @@ Type TEcs
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method bind:Object(entityId:Int, cName:String)
-		DebugStop()
 		Local e:TEntity = getEntity(entityId)
-		Local c:Object = TTypeId(componentTypes.valueForKey(cName)).newObject()
-		e.components.insert(cName, c)
-		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
+		Local c:Object = TTypeId(_componentTypes.valueForKey(cName)).newObject()
+		e._components.insert(cName, c)
+		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cName))
 		relationship.insert(entityId, e)
 		Return c
 	EndMethod
@@ -120,11 +121,10 @@ Type TEcs
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method unbind(entityId:Int, cName:String)
-		DebugStop()
 		Local e:TEntity = getEntity(entityId)
-		e.components.remove(cName)
-		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
-		relationship.remove(e.id)
+		e._components.remove(cName)
+		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cName))
+		relationship.remove(e._id)
 	EndMethod
 	
 	Rem
@@ -132,7 +132,7 @@ Type TEcs
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
 	Method query:TList(cName:String)
-		Local relationship:TIntMap = TIntMap(relationships.valueForKey(cName))
+		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cName))
 		If relationship = Null
 			Throw("TEcs.query(): Undefined component " + cName)
 		EndIf
@@ -178,12 +178,12 @@ Type TEcs
 		EndIf
 		Local resultList:TList = query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
-			Local relationship:TIntMap = TIntMap(relationships.valueForKey(archetype[i]))
+			Local relationship:TIntMap = TIntMap(_relationships.valueForKey(archetype[i]))
 			If relationship = Null
 				Throw("TEcs.queryStrict(): Undefined component " + archetype[i])
 			EndIf
 			For Local e:TEntity = EachIn resultList
-				If Not relationship.contains(e.id)
+				If Not relationship.contains(e._id)
 					resultList.remove(e)
 				EndIf
 			Next
@@ -196,33 +196,51 @@ Type TEcs
 		@deltaTime is the number of seconds since the previous update.
 	EndRem
 	Method update(deltaTime:Float)
-		For Local s:TSystem = EachIn systems
+		For Local s:TSystem = EachIn _systems
 			Try
 				Local archetype:String[] = s.GetArchetype()
+				If Len(archetype) = 0
+					'System has no archetype, update it once with an empty list
+					s.Update(New TList(), deltaTime)
+				EndIf
 				Local entities:TList = query(archetype)
 				If entities
-					For Local e:TEntity = EachIn entities
-						s.Update(e, deltaTime)
-					Next
+					s.Update(entities, deltaTime)
 				EndIf
 			Catch ex:Object
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
 			EndTry
 		Next
+		'Clear dead entities
+		For Local e:TEntity = EachIn _deadEntities
+			Local id:Int = e._id
+			Local cNames:TList = New TList()
+			For Local cName:String = EachIn e._components.keys()
+				cNames.addLast(cName)
+			Next
+			For Local cName:String = EachIn cNames
+				unbind(id, cName)
+			Next
+			_entities.remove(id)
+			e._ecs = Null
+		Next
+		_deadEntities.clear()
 	EndMethod
 	
 Private
 	
-	Field entities:TIntMap = New TIntMap()
+	Field _entities:TIntMap = New TIntMap()
 	
-	Field nextEntityId:Int = 1
+	Field _nextEntityId:Int = 0
 	
-	Field componentTypes:TStringMap = New TStringMap()
+	Field _deadEntities:TList = New TList()
+	
+	Field _componentTypes:TStringMap = New TStringMap()
 	
 	'TStringMap<TIntMap<TEntity>>
-	Field relationships:TStringMap = New TStringMap()
+	Field _relationships:TStringMap = New TStringMap()
 	
-	Field systems:TList = New TList()
+	Field _systems:TList = New TList()
 
 EndType
 
@@ -237,7 +255,7 @@ Type TEntity
 	bbdoc: Get the entitys ID.
 	EndRem
 	Method getId:Int()
-		Return id
+		Return _id
 	EndMethod
 	
 	Rem
@@ -246,9 +264,9 @@ Type TEntity
 	about: Throws an exception if there is no component for @cName.
 	EndRem
 	Method getComponent:Object(cName:String)
-		Local c:Object = components[cName]
+		Local c:Object = _components[cName]
 		If c = Null
-			Throw("TEcs.getComponent(): Could not get component " + cName + " from entity " + id)
+			Throw("TEcs.getComponent(): Could not get component " + cName + " from entity " + _id)
 		EndIf
 		Return c
 	EndMethod
@@ -258,7 +276,7 @@ Type TEntity
 	about: Throws an exception if there is no component for @cName.
 	EndRem
 	Method bind:Object(cName:String)
-		Return ecs.bind(id, cName)
+		Return _ecs.bind(_id, cName)
 	EndMethod
 	
 	Rem
@@ -266,7 +284,7 @@ Type TEntity
 	about: Throws an exception if there is no component for @cName.
 	EndRem
 	Method unbind(cName:String)
-		ecs.unbind(id, cName)
+		_ecs.unbind(_id, cName)
 	EndMethod
 	
 	Rem
@@ -274,7 +292,7 @@ Type TEntity
 	returns: Boolean True or False.
 	EndRem
 	Method isAlive:Int()
-		Return alive
+		Return _alive
 	EndMethod
 	
 	Rem
@@ -282,30 +300,26 @@ Type TEntity
 	about: Unbinds the entity from all related components and removes it from the system.
 	EndRem
 	Method kill()
-		For Local cName:String = EachIn components.keys()
-			ecs.unbind(id, cName)
-		Next
-		ecs.entities.remove(id)
-		ecs = Null
-		alive = False
+		_ecs._deadEntities.addLast(Self)
+		_alive = False
 	EndMethod
 	
 Private
 
-	Field id:Int
+	Field _id:Int
 	
-	Field components:TStringMap = New TStringMap()
+	Field _components:TStringMap = New TStringMap()
 
-	Field alive:Int = True
+	Field _alive:Int = True
 
-	Field ecs:TEcs
+	Field _ecs:TEcs
 	
 	Method New()
 	EndMethod
 
 	Method New(id:Int, ecs:TEcs)
-		Self.id = id
-		Self.ecs = ecs
+		_id = id
+		_ecs = ecs
 	EndMethod
 
 EndType
@@ -320,13 +334,18 @@ Type TSystem Abstract
 	bbdoc: Get the archetype for the system.
 	about: Override this function to return an array of component types.
 		The component types must be the same as provided by TTypeId.name().
+		If the system has no archetype then Update() will be called once
+		per loop and passed an empty list of entities.
 	EndRem
-	Function GetArchetype:String[]() Abstract
+	Function GetArchetype:String[]()
+		Return []
+	EndFunction
 	
 	Rem
 	bbdoc: Update an entity.
-	about: Override this method and put logic inside.
+	about: Override this method and put logic inside. @deltaTime is seconds
+		since the previous update.
 	EndRem
-	Function Update(entity:TEntity, deltaTime:Float) Abstract
+	Function Update(entities:TList, deltaTime:Float) Abstract
 
 EndType

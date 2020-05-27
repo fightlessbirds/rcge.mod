@@ -38,10 +38,12 @@ EndType
 
 Type TMoveSystem Extends TSystem
 
-	Function Update(e:TEntity, deltaTime:Float)
-		Local posRect:TPosition = TPosition(e.getComponent("TPosition"))
-		posRect.x :+ posRect.velX * deltaTime
-		posRect.y :+ posRect.velY * deltaTime
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local posRect:TPosition = TPosition(e.getComponent("TPosition"))
+			posRect.x :+ posRect.velX * deltaTime
+			posRect.y :+ posRect.velY * deltaTime
+		Next
 	EndFunction
 
 	Function GetArchetype:String[]()
@@ -52,10 +54,12 @@ EndType
 
 Type TDrawSystem Extends TSystem
 
-	Function Update(e:TEntity, deltaTime:Float)
-		Local pos:TPosition = TPosition(e.getComponent("TPosition"))
-		Local drawable:TDrawable = TDrawable(e.getComponent("TDrawable"))
-		DrawImage(drawable.image, pos.x, pos.y)
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+			Local drawable:TDrawable = TDrawable(e.getComponent("TDrawable"))
+			DrawImage(drawable.image, pos.x, pos.y)
+		Next
 	EndFunction
 
 	Function GetArchetype:String[]()
@@ -66,10 +70,22 @@ EndType
 
 Type TKillSystem Extends TSystem
 	
-	Function Update(e:TEntity, deltaTime:Float)
+	Function Update(entities:TList, deltaTime:Float)
 		If KeyHit(Key_Backspace)
-			LogInfo("Killing test entity")
-			e.kill()
+			LogInfo("Killing test entities")
+			For Local e:TEntity = EachIn entities
+				e.kill()
+			Next
+		Else
+			For Local e:TEntity = EachIn entities
+				Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+				Local isOffScreen:Int = False
+				If pos.x < 0 Or pos.x > SCREEN_WIDTH Or pos.y < 0 Or pos.y > SCREEN_HEIGHT Then isOffScreen = True
+				If isOffScreen
+					LogInfo("Entity moved off screen " + e.getId())
+					e.kill()
+				EndIf
+			Next
 		EndIf
 	EndFunction
 	
@@ -102,10 +118,11 @@ Type TTestScene Extends TScene
 			Next
 		EndIf
 		ecs.update(deltaTime)
-		LogInfo(deltaTime)
 	EndMethod
 	
 	Method render()
+		DrawText("Press spacebar to create entities.", 20, 20)
+		DrawText("Press backspace to kill all entities.", 20, 80)
 	EndMethod
 	
 	Method cleanup()
@@ -116,8 +133,8 @@ Type TTestScene Extends TScene
 		Local pos:TPosition = TPosition(e.bind("TPosition"))
 		pos.x = Rand(0, SCREEN_WIDTH)
 		pos.y = Rand(0, SCREEN_HEIGHT)
-		pos.velX = Rand(-25, 25)
-		pos.velY = Rand(-25, 25)
+		pos.velX = Rand(-20, 20)
+		pos.velY = Rand(-20, 20)
 		Local drawable:TDrawable = TDrawable(e.bind("TDrawable"))
 		drawable.image = TestImage
 		e.bind("TKillTag")
