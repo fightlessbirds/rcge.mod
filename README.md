@@ -5,6 +5,7 @@ Random Cruft Game Engine - A BlitzMax game framework
 ### game.mod
 ##### Usage Example
 ``` BlitzMax
+SuperStrict
 Import rcge.game
 
 Type TMyScene Extends TScene
