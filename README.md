@@ -35,7 +35,7 @@ Entities are essentially a bag of components.
 'Creation of a new entity
 Local e:TEntity = ecs.createEntity()
 'Add a component to the entity and initialize the data if necessary
-Local rect:TPosRect = e.bind("TPosRect")
+Local rect:TPosRect = TPosRect(e.bind("TPosRect"))
 rect.x = 100.0
 rect.y = 100.0
 rect.w = 50.0
@@ -62,11 +62,13 @@ EndType
 Systems contain the logic that is applied to a specific archetype.
 ``` BlitzMax
 Type TEnemyMissileSystem Extends TSystem
-	Function Update(e:TEntity, deltaTime:Float)
-		'The system can get whatever component it needs from the entity.
-		Local pos:TPosRect = TPosRect(e.getComponent("TPosRect"))
-		pos.x :+ MISSILE_SPEED * deltaTime
-		'Maybe do some collision check and stuff...
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			'The system can get whatever component it needs from the entity.
+			Local pos:TPosRect = TPosRect(e.getComponent("TPosRect"))
+			pos.x :+ MISSILE_SPEED * deltaTime
+			'Maybe do some collision check and stuff...
+		Next
 	EndFunction
 	
 	'Archetypes allow systems to say which entities they care about.
@@ -89,11 +91,13 @@ Type TMessage
 EndType
 
 Type TTestSystem Extends TSystem
-	Function Update(e:TEntity, deltaTime:Float)
-		Local c:TMessage = TMessage(e.getComponent("TMessage"))
-		DrawText(c.msg, 300, 200)
+	Function Update(entities:TList, deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local c:TMessage = TMessage(e.getComponent("TMessage"))
+			DrawText(c.msg, 300, 200)
+		Next
 	EndFunction
-
+	
 	Function GetArchetype:String[]()
 		Return ["TMessage"]
 	EndFunction
@@ -112,5 +116,5 @@ Repeat
 	Cls()
 	ecs.update(MilliSecs() / 1000.0)
 	Flip()
-Until  KeyHit(Key_Escape)
+Until KeyHit(Key_Escape)
 ```
