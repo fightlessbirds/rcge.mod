@@ -39,9 +39,9 @@ Type TGame
 	about: Throws an exception if a TGame instance already exists.
 	EndRem
 	Function CreateGame:TGame(screenW:Int, screenH:Int, fullscreen:Int=False)
-		If Instance = Null
-			Instance = New TGame(screenW, screenH, fullscreen)
-			Return Instance
+		If _Instance = Null
+			_Instance = New TGame(screenW, screenH, fullscreen)
+			Return _Instance
 		EndIf
 		LogError("TGame.CreateGame(): Cannot instantiate multiple TGame objects")
 	EndFunction
@@ -51,10 +51,10 @@ Type TGame
 	about: Throws an exception if TGame has not been instantiated.
 	EndRem
 	Function GetInstance:TGame()
-		If Instance = Null
+		If _Instance = Null
 			LogError("TGame.GetInstance(): No instance available")
 		EndIf
-		Return Instance
+		Return _Instance
 	EndFunction
 	
 	Rem
@@ -67,8 +67,8 @@ Type TGame
 		If sceneType = Null
 			Throw("TGame.addScene(): Could not find scene " + sceneName)
 		EndIf
-		scenes.addLast(sceneType)
-		If nextScene = Null Then nextScene = sceneType
+		_scenes.addLast(sceneType)
+		If _nextScene = Null Then _nextScene = sceneType
 		LogInfo("Added scene: " + sceneName)
 	EndMethod
 	
@@ -78,9 +78,9 @@ Type TGame
 		Throws an exception if the scene cannot be found.
 	EndRem
 	Method setNextScene(sceneName:String)
-		For Local sceneType:TTypeId = EachIn scenes
+		For Local sceneType:TTypeId = EachIn _scenes
 			If sceneName = sceneType.name()
-				nextScene = sceneType
+				_nextScene = sceneType
 				LogInfo("Next scene: " + sceneName)
 				Return
 			EndIf
@@ -95,20 +95,20 @@ Type TGame
 	EndRem
 	Method start()
 		LogInfo("Starting game")
-		If CountList(scenes) = 0
+		If CountList(_scenes) = 0
 			LogError("TGame.start(): Cannot start game, there are no scenes")
 			Return
 		EndIf
-		isRunning = True
-		While isRunning
-			Local scene:TScene = TScene(nextScene.newObject())
-			currentScene = scene
+		_isRunning = True
+		While _isRunning
+			Local scene:TScene = TScene(_nextScene.newObject())
+			_currentScene = scene
 			scene.isFinished = False
 			LogInfo("Initializing scene: " + TTypeId.ForObject(scene).name())
 			Try
 				scene.init()
-				'Update deltaTimer between scene switches to avoid inflating deltaTime
-				deltaTimer.update()
+				'Update _deltaTimer between scene switches to avoid inflating deltaTime
+				_deltaTimer.update()
 				While scene.isFinished = False
 					If AppTerminate()
 						LogInfo("App terminate request recieved")
@@ -116,8 +116,8 @@ Type TGame
 						Exit
 					EndIf
 					Cls()
-					deltaTimer.update()
-					scene.update(deltaTimer.frameTime)
+					_deltaTimer.update()
+					scene.update(_deltaTimer.frameTime / 1000.0)
 					scene.render()
 					Flip()
 				Wend
@@ -136,18 +136,16 @@ Type TGame
 	about: Clean up the current scene and exit the game loop.
 	EndRem
 	Method stop()
-		If isRunning
-			currentScene.isFinished = True
-			isRunning = False
-		EndIf
+		_currentScene.isFinished = True
+		_isRunning = False
 	EndMethod
 	
 Private
 	
-	Global Instance:TGame
+	Global _Instance:TGame
 	
 	Method New(screenW:Int, screenH:Int, fullscreen:Int=False)
-		Instance = Self
+		_Instance = Self
 		If fullscreen
 			Graphics(screenW, screenH, 32)
 		Else
@@ -155,15 +153,15 @@ Private
 		EndIf
 	EndMethod
 
-	Field isRunning:Int
+	Field _isRunning:Int
 	
-	Field scenes:TList = New TList()
+	Field _scenes:TList = New TList()
 	
-	Field currentScene:TScene
+	Field _currentScene:TScene
 	
-	Field nextScene:TTypeId
+	Field _nextScene:TTypeId
 	
-	Field deltaTimer:TDeltaTimer = New TDeltaTimer()
+	Field _deltaTimer:TDeltaTimer = New TDeltaTimer()
 	
 EndType
 
@@ -188,7 +186,7 @@ Type TScene Abstract
 	
 	Rem
 	bbdoc: Update the scene.
-	about: @deltaTime is the number of milliseconds since last update.
+	about: @deltaTime is the number of seconds since last update.
 	EndRem
 	Method update(deltaTime:Float) Abstract
 	
