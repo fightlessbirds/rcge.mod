@@ -38,39 +38,39 @@ EndType
 
 Type TMoveSystem Extends TSystem
 
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local posRect:TPosition = TPosition(e.getComponent("TPosition"))
 			posRect.x :+ posRect.velX * deltaTime
 			posRect.y :+ posRect.velY * deltaTime
 		Next
-	EndFunction
+	EndMethod
 
-	Function GetArchetype:String[]()
+	Method getArchetype:String[]()
 		Return ["TPosition", "TDrawable"]
-	EndFunction
+	EndMethod
 	
 EndType
 
 Type TDrawSystem Extends TSystem
 
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
 			Local drawable:TDrawable = TDrawable(e.getComponent("TDrawable"))
 			DrawImage(drawable.image, pos.x, pos.y)
 		Next
-	EndFunction
+	EndMethod
 
-	Function GetArchetype:String[]()
+	Method getArchetype:String[]()
 		Return ["TPosition", "TDrawable"]
-	EndFunction
+	EndMethod
 	
 EndType
 
 Type TKillSystem Extends TSystem
 	
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		If KeyHit(Key_Backspace)
 			LogInfo("Killing test entities")
 			For Local e:TEntity = EachIn entities
@@ -87,11 +87,11 @@ Type TKillSystem Extends TSystem
 				EndIf
 			Next
 		EndIf
-	EndFunction
+	EndMethod
 	
-	Function GetArchetype:String[]()
+	Method getArchetype:String[]()
 		Return ["TKillTag"]
-	EndFunction
+	EndMethod
 	
 EndType
 

@@ -7,16 +7,16 @@ Type TMessage
 EndType
 
 Type TTestSystem Extends TSystem
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local c:TMessage = TMessage(e.getComponent("TMessage"))
 			DrawText(c.msg, 300, 200)
 		Next
-	EndFunction
+	EndMethod
 	
-	Function GetArchetype:String[]()
+	Method getArchetype:String[]()
 		Return ["TMessage"]
-	EndFunction
+	EndMethod
 EndType
 
 Local ecs:TEcs = New TEcs()

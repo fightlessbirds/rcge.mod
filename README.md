@@ -63,19 +63,19 @@ EndType
 Systems contain the logic that is applied to a specific archetype.
 ``` BlitzMax
 Type TEnemyMissileSystem Extends TSystem
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			'The system can get whatever component it needs from the entity.
 			Local pos:TPosRect = TPosRect(e.getComponent("TPosRect"))
 			pos.x :+ MISSILE_SPEED * deltaTime
 			'Maybe do some collision check and stuff...
 		Next
-	EndFunction
+	EndMethod
 	
 	'Archetypes allow systems to say which entities they care about.
-	Function getArchetype:String[]()
+	Method getArchetype:String[]()
 		Return ["TEnemyMissile"]
-	EndFunction
+	EndMethod
 EndType
 ```
 ##### Archetypes

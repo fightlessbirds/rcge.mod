@@ -201,11 +201,11 @@ Type TEcs
 				Local archetype:String[] = s.GetArchetype()
 				If Len(archetype) = 0
 					'System has no archetype, update it once with an empty list
-					s.Update(New TList(), deltaTime)
+					s.update(New TList(), deltaTime)
 				EndIf
 				Local entities:TList = query(archetype)
 				If entities
-					s.Update(entities, deltaTime)
+					s.update(entities, deltaTime)
 				EndIf
 			Catch ex:Object
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
@@ -337,15 +337,15 @@ Type TSystem Abstract
 		If the system has no archetype then Update() will be called once
 		per loop and passed an empty list of entities.
 	EndRem
-	Function GetArchetype:String[]()
+	Method getArchetype:String[]()
 		Return []
-	EndFunction
+	EndMethod
 	
 	Rem
 	bbdoc: Update an entity.
 	about: Override this method and put logic inside. @deltaTime is seconds
 		since the previous update.
 	EndRem
-	Function Update(entities:TList, deltaTime:Float) Abstract
+	Method update(entities:TList, deltaTime:Float) Abstract
 
 EndType
