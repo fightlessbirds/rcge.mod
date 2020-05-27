@@ -84,6 +84,7 @@ ENEMY_MISSILE_ARCHETYPE = ["TPosRect", "TImage", "TEnemyMissile"]
 ```
 ##### Usage Example
 ``` BlitzMax
+SuperStrict
 Import rcge.ecs
 
 Type TMessage
