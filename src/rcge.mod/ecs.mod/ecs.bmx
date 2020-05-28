@@ -337,9 +337,9 @@ Type TSystem Abstract
 		If the system has no archetype then Update() will be called once
 		per loop and passed an empty list of entities.
 	EndRem
-	Method getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return []
-	EndMethod
+	EndFunction
 	
 	Rem
 	bbdoc: Update an entity.

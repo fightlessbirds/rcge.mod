@@ -73,9 +73,9 @@ Type TEnemyMissileSystem Extends TSystem
 	EndMethod
 	
 	'Archetypes allow systems to say which entities they care about.
-	Method getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return ["TEnemyMissile"]
-	EndMethod
+	EndFunction
 EndType
 ```
 ##### Archetypes
@@ -93,12 +93,12 @@ Type TMessage
 EndType
 
 Type TTestSystem Extends TSystem
-	Function Update(entities:TList, deltaTime:Float)
+	Method update(entities:TList, deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local c:TMessage = TMessage(e.getComponent("TMessage"))
 			DrawText(c.msg, 300, 200)
 		Next
-	EndFunction
+	EndMethod
 	
 	Function GetArchetype:String[]()
 		Return ["TMessage"]
