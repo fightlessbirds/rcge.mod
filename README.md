@@ -36,7 +36,7 @@ Entities are essentially a bag of components.
 'Creation of a new entity
 Local e:TEntity = ecs.createEntity()
 'Add a component to the entity and initialize the data if necessary
-Local rect:TPosRect = TPosRect(e.bind(TTypeId.ForName(POSRECT_TYPE)))
+Local rect:TPosRect = TPosRect(e.bind(POSRECT_TYPE))
 rect.x = 100.0
 rect.y = 100.0
 rect.w = 50.0
@@ -73,7 +73,7 @@ Type TEnemyMissileSystem Extends TSystem
 	EndMethod
 	
 	'Archetypes allow systems to say which entities they care about.
-	Function GetArchetype:String[]()
+	Function GetArchetype:TTypeId[]()
 		Return [ENEMY_MISSILE_ARCHETYPE]
 	EndFunction
 EndType
