@@ -24,7 +24,7 @@ EndType
 
 Type TMoveSystem Extends TSystem
 	
-	Method update(entities:TList, deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
 			pos.x = MouseX()
@@ -32,15 +32,15 @@ Type TMoveSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Method getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return ["TPosition"]
-	EndMethod
+	EndFunction
 	
 EndType
 
 Type TKillSystem Extends TSystem
 	
-	Method update(entities:TList, deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			If MouseHit(1)
 				LogInfo("Mouse button pressed, killing test entity")
@@ -49,15 +49,15 @@ Type TKillSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Method getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return ["TKillTag"]
-	EndMethod
+	EndFunction
 	
 EndType
 
 Type TDrawSystem Extends TSystem
 	
-	Method update(entities:TList, deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
 			SetColor(255, 0, 0)
@@ -65,9 +65,9 @@ Type TDrawSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Method getArchetype:String[]()
+	Function GetArchetype:String[]()
 		Return ["TPosition"]
-	EndMethod
+	EndFunction
 	
 EndType
 

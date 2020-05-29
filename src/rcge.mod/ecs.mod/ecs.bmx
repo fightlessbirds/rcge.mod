@@ -11,6 +11,8 @@ ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: Changed TList to TObjectList in some key performance areas."
+ModuleInfo "History: Entities are now passed to systems as a simple array TEntity[]."
 ModuleInfo "History: Systems can be standalone and operate once per loop without entities."
 ModuleInfo "History: Wait until update is finished before removing dead entities."
 ModuleInfo "History: Fixed a bug with query() being too strict, added new method queryStrict() as a side-effect."
@@ -23,6 +25,7 @@ ModuleInfo "History: Initial Release"
 
 Import BRL.LinkedList
 Import BRL.Map
+Import BRL.ObjectList
 Import BRL.Reflection
 
 Rem
@@ -128,55 +131,47 @@ Type TEcs
 	EndMethod
 	
 	Rem
-	bbdoc: Get a list of entities with a certain component.
+	bbdoc: Get an array of entities with a certain component.
 	about: Throws an exception if @cName has no matching component type.
 	EndRem
-	Method query:TList(cName:String)
-		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cName))
-		If relationship = Null
-			Throw("TEcs.query(): Undefined component " + cName)
-		EndIf
-		Local resultList:TList = New TList()
-		For Local e:TEntity = EachIn relationship.values()
-			resultList.addLast(e)
-		Next
-		Return resultList
+	Method query:TEntity[](cName:String)
+		Return _ObjectListToEntityArray(_query(cName))
 	EndMethod
 	
 	Rem
-	bbdoc: Get a list of entities matching an archetype.
+	bbdoc: Get an array of entities matching an archetype.
 	about: Throws an exception if any of the component types in @archetype are missing from the ECS.
 	EndRem
-	Method query:TList(archetype:String[])
+	Method query:TEntity[](archetype:String[])
 		Local componentCount:Int = Len(archetype)
 		If componentCount = 0
-			Return New TList()
+			Return New TEntity[0]
 		ElseIf componentCount = 1
 			Return query(archetype[0])
 		EndIf
-		Local resultList:TList = query(archetype[0])
+		Local resultList:TObjectList = _query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
-			Local listB:TList = query(archetype[i])
-			For Local e:TEntity = EachIn listB
+			Local compareList:TObjectList = _query(archetype[i])
+			For Local e:TEntity = EachIn compareList
 				If Not resultList.contains(e) Then resultList.addLast(e)
 			Next
 		Next
-		Return resultList
+		Return _ObjectListToEntityArray(resultList)
 	EndMethod
 	
 	Rem
-	bbdoc: Get a list of entities strictly matching an archetype.
+	bbdoc: Get an array of entities strictly matching an archetype.
 	about: Any entities with extra components will be excluded from the results.
 		Throws an exception if any of the component types in @archetype are missing from the ECS.
 	EndRem
-	Method queryStrict:TList(archetype:String[])
+	Method queryStrict:TEntity[](archetype:String[])
 		Local componentCount:Int = Len(archetype)
 		If componentCount = 0
-			Return New TList()
+			Return New TEntity[0]
 		ElseIf componentCount = 1
 			Return query(archetype[0])
 		EndIf
-		Local resultList:TList = query(archetype[0])
+		Local resultList:TObjectList = _query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
 			Local relationship:TIntMap = TIntMap(_relationships.valueForKey(archetype[i]))
 			If relationship = Null
@@ -188,6 +183,7 @@ Type TEcs
 				EndIf
 			Next
 		Next
+		Return _ObjectListToEntityArray(resultList)
 	EndMethod
 	
 	Rem
@@ -201,10 +197,10 @@ Type TEcs
 				Local archetype:String[] = s.GetArchetype()
 				If Len(archetype) = 0
 					'System has no archetype, update it once with an empty list
-					s.update(New TList(), deltaTime)
+					s.update(New TEntity[0], deltaTime)
 				EndIf
-				Local entities:TList = query(archetype)
-				If entities
+				Local entities:TEntity[] = query(archetype)
+				If Len(entities)
 					s.update(entities, deltaTime)
 				EndIf
 			Catch ex:Object
@@ -233,7 +229,7 @@ Private
 	
 	Field _nextEntityId:Int = 0
 	
-	Field _deadEntities:TList = New TList()
+	Field _deadEntities:TObjectList = New TObjectList()
 	
 	Field _componentTypes:TStringMap = New TStringMap()
 	
@@ -241,6 +237,31 @@ Private
 	Field _relationships:TStringMap = New TStringMap()
 	
 	Field _systems:TList = New TList()
+	
+	'Private version of query() that returns a TListObject rather than an array
+	Method _query:TObjectList(cName:String)
+		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cName))
+		If relationship = Null
+			Throw("TEcs.query(): Undefined component " + cName)
+		EndIf
+		Local resultList:TObjectList = New TObjectList()
+		For Local e:TEntity = EachIn relationship.values()
+			resultList.addLast(e)
+		Next
+		Return resultList
+	EndMethod
+	
+	'Convenience function for converting a TObjectList to TEntity[]
+	Function _ObjectListToEntityArray:TEntity[](objectList:TObjectList)
+		Local resultCount:Int = objectList.count()
+		Local resultArray:TEntity[] = New TEntity[resultCount]
+		Local i:Int = 0
+		For Local e:Object = EachIn objectList
+			resultArray[i] = TEntity(e)
+			i :+ 1
+		Next
+		Return resultArray
+	EndFunction
 
 EndType
 
@@ -346,6 +367,6 @@ Type TSystem Abstract
 	about: Override this method and put logic inside. @deltaTime is seconds
 		since the previous update.
 	EndRem
-	Method update(entities:TList, deltaTime:Float) Abstract
+	Method update(entities:TEntity[], deltaTime:Float) Abstract
 
 EndType

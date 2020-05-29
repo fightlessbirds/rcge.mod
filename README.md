@@ -93,7 +93,7 @@ Type TMessage
 EndType
 
 Type TTestSystem Extends TSystem
-	Method update(entities:TList, deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			Local c:TMessage = TMessage(e.getComponent("TMessage"))
 			DrawText(c.msg, 300, 200)
