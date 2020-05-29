@@ -233,8 +233,7 @@ Type TEcs
 	
 	Field _deadEntities:TObjectList = New TObjectList()
 	
-	'TODO convert to TObjectList?
-	Field _componentTypes:TList = New TList()
+	Field _componentTypes:TObjectList = New TObjectList()
 	
 	'TMap<K=TTypeId,V=TIntMap<TEntity>>
 	Field _relationships:TMap = New TMap()
