@@ -40,11 +40,29 @@ Function TimestampConvert:TStringBuilder(timeMilliseconds:Int)
 	Local hours:Int = (((((timeMilliseconds - milliseconds) / 1000) - seconds) / 60) - minutes) / 60
 	Local timestamp:TStringBuilder = new TStringBuilder()
 	timestamp.append(hours)
-	timestamp.append(":")
+	
+	If minutes < 10
+		timestamp.append(":0")
+	Else
+		timestamp.append(":")
+	EndIf
 	timestamp.append(minutes)
-	timestamp.append(":")
+	
+	If seconds < 10
+		timestamp.append(":0")
+	Else
+		timestamp.append(":")
+	EndIf
 	timestamp.append(seconds)
-	timestamp.append(":")
+	
+	If milliseconds < 10
+		timestamp.append(":00")
+	ElseIf milliseconds < 100
+		timestamp.append(":0")
+	Else
+		timestamp.append(":")
+	EndIf
 	timestamp.append(milliseconds)
+	
 	Return timestamp
 EndFunction
