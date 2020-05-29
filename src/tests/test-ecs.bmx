@@ -10,36 +10,33 @@ Import rcge.game
 Import rcge.ecs
 Import rcge.log
 
-Global TEST_ARCHETYPE:String[] = ["TPosition", "TKillTag"]
-
 Type TPosition
-	
 	Field x:Float
 	Field y:Float
-	
 EndType
+Global POSITION_TYPE:TTypeId = TTypeId.ForName("TPosition")
 
 Type TKillTag
 EndType
+Global KILLTAG_TYPE:TTypeId = TTypeId.ForName("TKillTag")
+
+Global TEST_ARCHETYPE:TTypeId[] = [POSITION_TYPE, KILLTAG_TYPE]
 
 Type TMoveSystem Extends TSystem
-	
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
-			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			pos.x = MouseX()
 			pos.y = MouseY()
 		Next
 	EndMethod
 	
-	Function GetArchetype:String[]()
-		Return ["TPosition"]
+	Function GetArchetype:TTypeId[]()
+		Return [POSITION_TYPE]
 	EndFunction
-	
 EndType
 
 Type TKillSystem Extends TSystem
-	
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			If MouseHit(1)
@@ -49,26 +46,23 @@ Type TKillSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Function GetArchetype:String[]()
-		Return ["TKillTag"]
+	Function GetArchetype:TTypeId[]()
+		Return [KILLTAG_TYPE]
 	EndFunction
-	
 EndType
 
 Type TDrawSystem Extends TSystem
-	
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
-			Local pos:TPosition = TPosition(e.getComponent("TPosition"))
+			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			SetColor(255, 0, 0)
 			DrawRect(pos.x, pos.y, 50, 50)
 		Next
 	EndMethod
 	
-	Function GetArchetype:String[]()
-		Return ["TPosition"]
+	Function GetArchetype:TTypeId[]()
+		Return [POSITION_TYPE]
 	EndFunction
-	
 EndType
 
 Type TTestScene Extends TScene
@@ -76,9 +70,8 @@ Type TTestScene Extends TScene
 	Field ecs:TEcs = New TEcs()
 	
 	Method init()
-		
-		ecs.addComponentType("TPosition")
-		ecs.addComponentType("TKillTag")
+		ecs.addComponentType(POSITION_TYPE)
+		ecs.addComponentType(KILLTAG_TYPE)
 		
 		ecs.addSystem(New TMoveSystem())
 		ecs.addSystem(New TDrawSystem())

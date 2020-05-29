@@ -36,7 +36,7 @@ Entities are essentially a bag of components.
 'Creation of a new entity
 Local e:TEntity = ecs.createEntity()
 'Add a component to the entity and initialize the data if necessary
-Local rect:TPosRect = TPosRect(e.bind("TPosRect"))
+Local rect:TPosRect = TPosRect(e.bind(TTypeId.ForName(POSRECT_TYPE)))
 rect.x = 100.0
 rect.y = 100.0
 rect.w = 50.0
@@ -66,7 +66,7 @@ Type TEnemyMissileSystem Extends TSystem
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			'The system can get whatever component it needs from the entity.
-			Local pos:TPosRect = TPosRect(e.getComponent("TPosRect"))
+			Local pos:TPosRect = TPosRect(e.getComponent(POSRECT_TYPE))
 			pos.x :+ MISSILE_SPEED * deltaTime
 			'Maybe do some collision check and stuff...
 		Next
@@ -74,45 +74,53 @@ Type TEnemyMissileSystem Extends TSystem
 	
 	'Archetypes allow systems to say which entities they care about.
 	Function GetArchetype:String[]()
-		Return ["TEnemyMissile"]
+		Return [ENEMY_MISSILE_ARCHETYPE]
 	EndFunction
 EndType
 ```
 ##### Archetypes
-Archetypes are a combination of components held by one or more entities. They are used to query for and create new entities.
-``` BlitzMax
-ENEMY_MISSILE_ARCHETYPE = ["TPosRect", "TImage", "TEnemyMissile"]
-```
+Archetypes are a combination of components held by one or more entities. They are used to query for and create new entities. In the code they are expressed as an array of TTypeId objects.
+
 ##### Usage Example
 ``` BlitzMax
 SuperStrict
 Import rcge.ecs
 
+'Component type definition
 Type TMessage
 	Field msg:String
 EndType
+'Hold on to the TTypeId so we don't have to lookup again.
+Global MESSAGE_TYPE:TTypeId = TTypeId.ForName("TMessage")
 
+'System definition
 Type TTestSystem Extends TSystem
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
-			Local c:TMessage = TMessage(e.getComponent("TMessage"))
+			'Typecast the retrieved component. It is assumed that all
+			'component types are known at compile time.
+			Local c:TMessage = TMessage(e.getComponent(MESSAGE_TYPE))
 			DrawText(c.msg, 300, 200)
 		Next
 	EndMethod
 	
-	Function GetArchetype:String[]()
-		Return ["TMessage"]
+	'Let the ECS know which entities this system will process.
+	Function GetArchetype:TTypeId[]()
+		Return [MESSAGE_TYPE]
 	EndFunction
 EndType
 
+'Create and initialize the ECS
 Local ecs:TEcs = New TEcs()
-ecs.addComponentType("TMessage")
+ecs.addComponentType(MESSAGE_TYPE)
 ecs.addSystem(New TTestSystem())
 
+'Create a test entity
 Local e:TEntity = ecs.createEntity()
-Local c:TMessage = TMessage(e.bind("TMessage"))
+Local c:TMessage = TMessage(e.bind(MESSAGE_TYPE))
 c.msg = "Hello ECS =)"
 
+'Start app loop
 Graphics(640, 480)
 Repeat
 	Cls()
