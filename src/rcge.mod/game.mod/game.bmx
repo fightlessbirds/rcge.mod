@@ -140,7 +140,7 @@ Type TGame
 		_isRunning = False
 	EndMethod
 	
-Private
+	Private
 	
 	Global _Instance:TGame
 	

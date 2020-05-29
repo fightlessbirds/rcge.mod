@@ -6,7 +6,7 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.2.2"
+ModuleInfo "Version: 0.2.3"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
@@ -225,7 +225,7 @@ Type TEcs
 		_deadEntities.clear()
 	EndMethod
 	
-Private
+	Private
 	
 	Field _entities:TIntMap = New TIntMap()
 	
@@ -328,7 +328,7 @@ Type TEntity
 		_alive = False
 	EndMethod
 	
-Private
+	Private
 
 	Field _id:Int
 	
