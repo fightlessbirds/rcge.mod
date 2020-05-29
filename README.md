@@ -63,7 +63,7 @@ EndType
 Systems contain the logic that is applied to a specific archetype.
 ``` BlitzMax
 Type TEnemyMissileSystem Extends TSystem
-	Method update(entities:TList, deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
 			'The system can get whatever component it needs from the entity.
 			Local pos:TPosRect = TPosRect(e.getComponent("TPosRect"))
