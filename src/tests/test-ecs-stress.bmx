@@ -37,9 +37,25 @@ Global DRAWABLE_TYPE:TTypeId = TTypeId.ForName("TDrawable")
 Type TMoveSystem Extends TSystem
 	Method update(entities:TEntity[], deltaTime:Float)
 		For Local e:TEntity = EachIn entities
-			Local posRect:TPosition = TPosition(e.getComponent(POSITION_TYPE))
-			posRect.x :+ posRect.velX * deltaTime
-			posRect.y :+ posRect.velY * deltaTime
+			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
+			Local x:Int = pos.x
+			Local y:Int = pos.y
+			Local velX:Int = pos.velX
+			Local velY:Int = pos.velY
+			
+			pos.x :+ velX * deltaTime
+			pos.y :+ velY * deltaTime
+			
+			If x < 0 And velX < 0
+				pos.velX = velX * -1
+			ElseIf x > SCREEN_WIDTH And velX > 0
+				pos.velX = velX * -1
+			EndIf
+			If y < 0 And velY < 0
+				pos.velY = velY * -1
+			ElseIf y > SCREEN_HEIGHT And velY > 0
+				pos.velY = velY * -1
+			EndIf
 		Next
 	EndMethod
 
@@ -69,16 +85,6 @@ Type TKillSystem Extends TSystem
 			For Local e:TEntity = EachIn entities
 				e.kill()
 			Next
-		Else
-			For Local e:TEntity = EachIn entities
-				Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
-				Local isOffScreen:Int = False
-				If pos.x < 0 Or pos.x > SCREEN_WIDTH Or pos.y < 0 Or pos.y > SCREEN_HEIGHT Then isOffScreen = True
-				If isOffScreen
-					LogInfo("Entity moved off screen " + e.getId())
-					e.kill()
-				EndIf
-			Next
 		EndIf
 	EndMethod
 	
@@ -92,13 +98,13 @@ Type TTestScene Extends TScene
 	Field ecs:TEcs = New TEcs()
 
 	Method init()
+		ecs.profilingEnabled = True
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(DRAWABLE_TYPE)
 		ecs.addComponentType(KILLTAG_TYPE)
 		ecs.addSystem(New TMoveSystem())
 		ecs.addSystem(New TDrawSystem())
 		ecs.addSystem(New TKillSystem())
-		addTestEntity()
 	EndMethod
 	
 	Method update(deltaTime:Float)

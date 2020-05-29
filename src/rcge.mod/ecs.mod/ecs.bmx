@@ -28,11 +28,15 @@ Import BRL.Map
 Import BRL.ObjectList
 Import BRL.Reflection
 
+Import rcge.log
+
 Rem
 bbdoc: ECS class
 about:
 EndRem
 Type TEcs
+	
+	Field profilingEnabled:Int = False
 	
 	Rem
 	bbdoc: Add a system to the ECS.
@@ -194,8 +198,10 @@ Type TEcs
 		@deltaTime is the number of seconds since the previous update.
 	EndRem
 	Method update(deltaTime:Float)
+		Local profilerStartMillis:Int
 		For Local s:TSystem = EachIn _systems
 			Try
+				If profilingEnabled Then profilerStartMillis = MilliSecs()
 				Local archetype:TTypeId[] = s.GetArchetype()
 				If Len(archetype) = 0
 					'System has no archetype, update it once with an empty list
@@ -204,6 +210,10 @@ Type TEcs
 				Local entities:TEntity[] = query(archetype)
 				If Len(entities)
 					s.update(entities, deltaTime)
+				EndIf
+				If profilingEnabled
+					Local updateTookMillis:Int = MilliSecs() - profilerStartMillis
+					LogInfo(TTypeId.ForObject(s).name() + " updated in ms: " + updateTookMillis)
 				EndIf
 			Catch ex:Object
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
