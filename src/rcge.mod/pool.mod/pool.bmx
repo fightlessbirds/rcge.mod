@@ -1,5 +1,9 @@
 SuperStrict
 
+Rem
+bbdoc: A pool of objects that can be reused to avoid allocation.
+about: Partly translated from https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/Pool.java
+EndRem
 Module rcge.pool
 
 ModuleInfo "Version: 1.0.0"
@@ -13,8 +17,7 @@ ModuleInfo "History: Initial Release"
 Import BRL.Collections
 
 Rem
-bbdoc: A pool of objects that can be reused to avoid allocation.
-about: Partly translated from https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/Pool.java
+bbdoc: Pool class
 EndRem
 Type TPool<T> Abstract
 	
@@ -23,7 +26,7 @@ Type TPool<T> Abstract
 	about: @initialSize is the initial size of the pool.
 	@max is the maximum number of free objects to store in this pool.
 	EndRem
-	Method New()(initialSize:Int = 0, maxSize:Int=INT_MAX_VALUE)
+	Method New()(initialSize:Int=0, maxSize:Int=INT_MAX_VALUE)
 		If initialSize > maxSize
 			Throw("TPool.New(): max must be larger than initialCapacity")
 		EndIf
