@@ -20,7 +20,7 @@ Type TPool<T> Abstract
 	
 	Rem
 	bbdoc: TPool constructor
-	about: @initialSize is the initial size of the pool. No objects are created unless preFill is true.
+	about: @initialSize is the initial size of the pool.
 	@max is the maximum number of free objects to store in this pool.
 	EndRem
 	Method New()(initialSize:Int = 0, maxSize:Int=INT_MAX_VALUE)
