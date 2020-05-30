@@ -114,7 +114,8 @@ Type TPool<T> Abstract
 	
 	Rem
 	bbdoc: Override this to return a new object for this pool.
-	about: The object must implement the IPoolable interface.
+	about: The object can optionally implement the IPoolable interface.
+	This will ensure the object state gets reset when it's freed.
 	EndRem
 	Method newObject:T() Abstract
 	
