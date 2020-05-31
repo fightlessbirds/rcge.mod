@@ -30,6 +30,9 @@ Import BRL.Reflection
 
 Import rcge.log
 
+Include "TEntity.bmx"
+Include "TSystem.bmx"
+
 Rem
 bbdoc: ECS class
 about:
@@ -274,111 +277,5 @@ Type TEcs
 		Next
 		Return resultArray
 	EndFunction
-
-EndType
-
-Rem
-bbdoc: Entity class
-about: Entities hold no data or functionality. They are essentially a unique identifier
-	for a collection of components.
-EndRem
-Type TEntity
-	
-	Rem
-	bbdoc: Get the entitys ID.
-	EndRem
-	Method getId:Int()
-		Return _id
-	EndMethod
-	
-	Rem
-	bbdoc: Get a component object from the entity.
-	returns: The component object.
-	about: Throws an exception if there is no component for @cType.
-	EndRem
-	Method getComponent:Object(cType:TTypeId)
-		Local c:Object = _components[cType]
-		If c = Null
-			Throw("TEcs.getComponent(): Could not get component " + cType.name() + " from entity " + _id)
-		EndIf
-		Return c
-	EndMethod
-	
-	Rem
-	bbdoc: Add a component to the entity.
-	about: Throws an exception if there is no component for @cType.
-	EndRem
-	Method bind:Object(cType:TTypeId)
-		Return _ecs.bind(_id, cType)
-	EndMethod
-	
-	Rem
-	bbdoc: Remove a component from the entity.
-	about: Throws an exception if there is no component for @cType.
-	EndRem
-	Method unbind(cType:TTypeId)
-		_ecs.unbind(_id, cType)
-	EndMethod
-	
-	Rem
-	bbdoc: Check if the entity is alive. Dead entities do not belong to an ECS.
-	returns: Boolean True or False.
-	EndRem
-	Method isAlive:Int()
-		Return _alive
-	EndMethod
-	
-	Rem
-	bbdoc: Kill the entity.
-	about: Unbinds the entity from all related components and removes it from the system.
-	EndRem
-	Method kill()
-		_ecs._deadEntities.addLast(Self)
-		_alive = False
-	EndMethod
-	
-	Private
-
-	Field _id:Int
-	
-	Field _components:TMap = New TMap()
-
-	Field _alive:Int = True
-
-	Field _ecs:TEcs
-	
-	Method New()
-	EndMethod
-
-	Method New(id:Int, ecs:TEcs)
-		_id = id
-		_ecs = ecs
-	EndMethod
-
-EndType
-
-Rem
-bbdoc: System base class
-about: Systems hold the logic that is applied to an archetype.
-EndRem
-Type TSystem Abstract
-
-	Rem
-	bbdoc: Get the archetype for the system.
-	about: Override this function to return an array of component types.
-		The component types must be the same as provided by TTypeId.name().
-		If the system has no archetype then Update() will be called once
-		per loop and passed an empty list of entities.
-	EndRem
-	Function GetArchetype:TTypeId[]()
-		Return New TTypeId[0]
-	EndFunction
-	
-	Rem
-	bbdoc: Update an entity.
-	about: Override this method and put logic inside. @deltaTime is seconds
-		since the previous update.
-	EndRem
-	Method update(entities:TEntity[], deltaTime:Float) Abstract
 
 EndType
