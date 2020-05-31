@@ -6,7 +6,7 @@ about: Partly translated from https://github.com/libgdx/libgdx/blob/master/gdx/s
 EndRem
 Module rcge.pool
 
-ModuleInfo "Version: 1.0.0"
+ModuleInfo "Version: 1.0.1"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds, 2011 Nathan Sweet"
@@ -19,18 +19,18 @@ Import BRL.Collections
 Rem
 bbdoc: Pool class
 EndRem
-Type TPool<T> Abstract
+Type TPool<T>
 	
 	Rem
 	bbdoc: TPool constructor
 	about: @initialSize is the initial size of the pool.
 	@max is the maximum number of free objects to store in this pool.
 	EndRem
-	Method New()(initialSize:Int=0, maxSize:Int=INT_MAX_VALUE)
+	Method New(initialSize:Int=0, maxSize:Int=65536)
 		If initialSize > maxSize
 			Throw("TPool.New(): max must be larger than initialCapacity")
 		EndIf
-		_freeObjects = New TStack<IPoolable>()
+		_freeObjects = New TStack<T>()
 		_maxSize = maxSize
 		For Local i:Int = 0 To initialSize
 			_freeObjects.push(newObject())
@@ -88,7 +88,7 @@ Type TPool<T> Abstract
 	an object is already freed, so the same object must not be freed multiple times.
 	EndRem
 	Method freeAll(objects:T[])
-		If obj = Null
+		If objects = Null
 			Throw("TPool.freeAll(): objects cannot be Null")
 		EndIf
 		For Local obj:T = EachIn objects
@@ -120,7 +120,9 @@ Type TPool<T> Abstract
 	about: The object can optionally implement the IPoolable interface.
 	This will ensure the object state gets reset when it's freed.
 	EndRem
-	Method newObject:T() Abstract
+	Method newObject:T()
+		Return New T()
+	EndMethod
 	
 	Rem
 	bbdoc: Called when an object is freed to clear the state of the object for possible later reuse.
@@ -140,10 +142,6 @@ Type TPool<T> Abstract
 	
 	Field _freeObjects:TStack<T>
 	
-	'Private default constructor
-	Method New()
-	EndMethod
-	
 EndType
 
 Rem
@@ -156,7 +154,3 @@ Interface IPoolable
 	EndRem
 	Method reset()
 EndInterface
-
-Private
-
-Const INT_MAX_VALUE:Int = 2147483647

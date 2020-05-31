@@ -6,11 +6,12 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.2.3"
+ModuleInfo "Version: 0.2.4"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "Histroy: Added a component operation buffer that is flushed after each system is update for better concurrency."
 ModuleInfo "History: Changed TList to TObjectList in some key performance areas."
 ModuleInfo "History: Entities are now passed to systems as a simple array TEntity[]."
 ModuleInfo "History: Systems can be standalone and operate once per loop without entities."
@@ -29,9 +30,11 @@ Import BRL.ObjectList
 Import BRL.Reflection
 
 Import rcge.log
+Import rcge.pool
 
 Include "TEntity.bmx"
 Include "TSystem.bmx"
+Include "TComponentOperationBuffer.bmx"
 
 Rem
 bbdoc: ECS class
@@ -111,7 +114,7 @@ Type TEcs
 	Rem
 	bbdoc: Add a component to an entity.
 	returns: The newly added component object.
-	about: Throws an exception if @cType has no matching component type.
+	about: Throws an exception if there is no entity with @entityId or if @cType has no matching component type.
 	EndRem
 	Method bind:Object(entityId:Int, cType:TTypeId)
 		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cType))
@@ -120,8 +123,12 @@ Type TEcs
 		EndIf
 		Local e:TEntity = getEntity(entityId)
 		Local c:Object = cType.newObject()
-		e._components.insert(cType, c)
-		relationship.insert(entityId, e)
+		If _isUpdating
+			_componentOperationBuffer.enqueueBind(relationship, e, cType, c)
+		Else
+			e._components.insert(cType, c)
+			relationship.insert(entityId, e)
+		EndIf
 		Return c
 	EndMethod
 	
@@ -135,8 +142,12 @@ Type TEcs
 			Throw("TEcs.unbind(): Can not unbind unknown component type " + cType.name())
 		EndIf
 		Local e:TEntity = getEntity(entityId)
-		e._components.remove(cType)
-		relationship.remove(entityId)
+		If _isUpdating
+			_componentOperationBuffer.enqueueUnbind(relationship, e, cType)
+		Else
+			e._components.remove(cType)
+			relationship.remove(entityId)
+		EndIf
 	EndMethod
 	
 	Rem
@@ -201,6 +212,7 @@ Type TEcs
 		@deltaTime is the number of seconds since the previous update.
 	EndRem
 	Method update(deltaTime:Float)
+		_isUpdating = True
 		Local profilerStartMillis:Int
 		For Local s:TSystem = EachIn _systems
 			Try
@@ -214,6 +226,8 @@ Type TEcs
 				If Len(entities)
 					s.update(entities, deltaTime)
 				EndIf
+				_componentOperationBuffer.flush()
+				_clearDeadEntities()
 				If profilingEnabled
 					Local updateTookMillis:Int = MilliSecs() - profilerStartMillis
 					LogInfo(TTypeId.ForObject(s).name() + " updated in ms: " + updateTookMillis)
@@ -222,23 +236,13 @@ Type TEcs
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
 			EndTry
 		Next
-		'Clear dead entities
-		For Local e:TEntity = EachIn _deadEntities
-			Local id:Int = e._id
-			Local cTypes:TList = New TList()
-			For Local cType:TTypeId = EachIn e._components.keys()
-				cTypes.addLast(cType)
-			Next
-			For Local cType:TTypeId = EachIn cTypes
-				unbind(id, cType)
-			Next
-			_entities.remove(id)
-			e._ecs = Null
-		Next
-		_deadEntities.clear()
+		_isUpdating = False
 	EndMethod
 	
+	
 	Private
+	
+	Field _isUpdating:Int
 	
 	Field _entities:TIntMap = New TIntMap()
 	
@@ -247,6 +251,8 @@ Type TEcs
 	Field _deadEntities:TObjectList = New TObjectList()
 	
 	Field _componentTypes:TObjectList = New TObjectList()
+	
+	Field _componentOperationBuffer:TComponentOperationBuffer = New TComponentOperationBuffer(Self)
 	
 	'TMap<K=TTypeId,V=TIntMap<TEntity>>
 	Field _relationships:TMap = New TMap()
@@ -264,6 +270,22 @@ Type TEcs
 			resultList.addLast(e)
 		Next
 		Return resultList
+	EndMethod
+	
+	Method _clearDeadEntities()
+		For Local e:TEntity = EachIn _deadEntities
+			Local id:Int = e._id
+			Local cTypes:TList = New TList()
+			For Local cType:TTypeId = EachIn e._components.keys()
+				cTypes.addLast(cType)
+			Next
+			For Local cType:TTypeId = EachIn cTypes
+				unbind(id, cType)
+			Next
+			_entities.remove(id)
+			e._ecs = Null
+		Next
+		_deadEntities.clear()
 	EndMethod
 	
 	'Convenience function for converting a TObjectList to TEntity[]
