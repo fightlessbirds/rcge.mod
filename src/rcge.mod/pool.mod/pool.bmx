@@ -127,8 +127,9 @@ Type TPool<T> Abstract
 	about: Calls Poolable.reset() if the object implements IPoolable.
 	EndRem
 	Method reset(obj:T)
-		If TTypeId.ForObject(obj).extendsType(TTypeId.ForName("IPoolable"))
-			IPoolable(obj).reset()
+		Local poolable:IPoolable = IPoolable(obj)
+		If poolable
+			poolable.reset()
 		EndIf
 	EndMethod
 	
