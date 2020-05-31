@@ -1,3 +1,5 @@
+Private
+
 Type TComponentOperationBuffer
 	
 	Const OP_BIND:Int = 0
@@ -65,3 +67,5 @@ Type TComponentOperation
 	EndMethod
 	
 EndType
+
+Public
