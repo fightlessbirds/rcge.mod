@@ -217,6 +217,8 @@ Type TEcs
 		For Local s:TSystem = EachIn _systems
 			Try
 				If profilingEnabled Then profilerStartMillis = MilliSecs()
+				
+				_isUpdating = True
 				Local archetype:TTypeId[] = s.GetArchetype()
 				If Len(archetype) = 0
 					'System has no archetype, update it once with an empty list
@@ -226,6 +228,8 @@ Type TEcs
 				If Len(entities)
 					s.update(entities, deltaTime)
 				EndIf
+				_isUpdating = False
+				
 				_componentOperationBuffer.flush()
 				_clearDeadEntities()
 				If profilingEnabled
@@ -236,7 +240,6 @@ Type TEcs
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
 			EndTry
 		Next
-		_isUpdating = False
 	EndMethod
 	
 	

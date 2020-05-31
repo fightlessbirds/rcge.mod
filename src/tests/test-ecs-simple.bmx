@@ -1,5 +1,11 @@
 SuperStrict
 
+?win32
+Framework SDL.d3d9sdlmax2d
+?Not win32
+Framework SDL.gl2sdlmax2d
+?
+
 Import rcge.ecs
 
 'Component type definition
