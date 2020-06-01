@@ -21,6 +21,7 @@ Type TEcs
 			EndIf
 		Next
 		_systems.addLast(s)
+		s.addNotify(Self)
 	EndMethod
 	
 	Rem

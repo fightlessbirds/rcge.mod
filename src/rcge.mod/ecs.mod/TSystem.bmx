@@ -21,5 +21,17 @@ Type TSystem Abstract
 		since the previous update.
 	EndRem
 	Method update(entities:TEntity[], deltaTime:Float) Abstract
+	
+	Method getEcs:TEcs()
+		Return _ecs
+	EndMethod
+	
+	Method addNotify(ecs:TEcs)
+		_ecs = ecs
+	EndMethod
+	
+	Private
+	
+	Field _ecs:TEcs
 
 EndType
