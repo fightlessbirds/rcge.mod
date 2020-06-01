@@ -6,11 +6,13 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.2.4"
+ModuleInfo "Version: 0.3.0"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: 0.3.0"
+ModuleInfo "History: Added an event dispatcher to TEcs. Event listeners can be added, removed and triggered with optional context data."
 ModuleInfo "Histroy: Added a component operation buffer that is flushed after each system is update for better concurrency."
 ModuleInfo "History: Changed TList to TObjectList in some key performance areas."
 ModuleInfo "History: Entities are now passed to systems as a simple array TEntity[]."
@@ -29,6 +31,7 @@ Import BRL.Map
 Import BRL.ObjectList
 Import BRL.Reflection
 
+Import rcge.event
 Import rcge.log
 Import rcge.pool
 

@@ -169,6 +169,22 @@ Type TEcs
 		Return _ObjectListToEntityArray(resultList)
 	EndMethod
 	
+	Method addEventListener(listener:IEventListener)
+		_eventDispatcher.add(listener)
+	EndMethod
+	
+	Method removeEventListener(listener:IEventListener)
+		_eventDispatcher.remove(listener)
+	EndMethod
+	
+	Method removeAllEventListeners()
+		_eventDispatcher.removeAll()
+	EndMethod
+	
+	Method triggerEvent(eventName:String, context:Object=Null)
+		_eventDispatcher.trigger(eventName, context)
+	EndMethod
+	
 	Rem
 	bbdoc: Update all systems.
 	about: Systems are updated sequentially in the same order they were added to the ECS.<br>
@@ -224,6 +240,8 @@ Type TEcs
 	Field _relationships:TMap = New TMap()
 	
 	Field _systems:TList = New TList()
+	
+	Field _eventDispatcher:TEventDispatcher = New TEventDispatcher()
 	
 	'Private version of query() that returns a TListObject rather than an array
 	Method _query:TObjectList(cType:TTypeId)

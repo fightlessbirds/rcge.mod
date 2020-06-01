@@ -1,0 +1,111 @@
+SuperStrict
+
+?win32
+Framework SDL.d3d9sdlmax2d
+?Not win32
+Framework SDL.gl2sdlmax2d
+?
+
+Import rcge.game
+Import rcge.ecs
+Import rcge.log
+
+Global POSITION_TYPE:TTypeId = TTypeId.ForName("TPosition")
+Type TPosition
+	Field x:Float
+	Field y:Float
+EndType
+
+Global KILLTAG_TYPE:TTypeId = TTypeId.ForName("TKillTag")
+Type TKillTag
+EndType
+
+Global TEST_ARCHETYPE:TTypeId[] = [POSITION_TYPE, KILLTAG_TYPE]
+
+Type TMoveSystem Extends TSystem
+	Method update(entities:TEntity[], deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
+			pos.x = MouseX()
+			pos.y = MouseY()
+		Next
+	EndMethod
+	
+	Function GetArchetype:TTypeId[]()
+		Return [POSITION_TYPE]
+	EndFunction
+EndType
+
+Type TKillSystem Extends TSystem
+	Method update(entities:TEntity[], deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			If MouseHit(1)
+				LogInfo("Mouse button pressed, triggering kill event")
+				getEcs().triggerEvent("Kill", e)
+			EndIf
+		Next
+	EndMethod
+	
+	Function GetArchetype:TTypeId[]()
+		Return [KILLTAG_TYPE]
+	EndFunction
+EndType
+
+Type TDrawSystem Extends TSystem
+	Method update(entities:TEntity[], deltaTime:Float)
+		For Local e:TEntity = EachIn entities
+			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
+			SetColor(255, 0, 0)
+			DrawRect(pos.x, pos.y, 50, 50)
+		Next
+	EndMethod
+	
+	Function GetArchetype:TTypeId[]()
+		Return [POSITION_TYPE]
+	EndFunction
+EndType
+
+Type TKillEventListener Implements IEventListener
+	Method getEventName:String()
+		Return "Kill"
+	EndMethod
+		
+	Method onEvent(dispatcher:TEventDispatcher, context:Object=Null)
+		dispatcher.remove(Self)
+		Local e:TEntity = TEntity(context)
+		e.kill()
+	EndMethod
+EndType
+
+Type TTestScene Extends TScene
+	
+	Field ecs:TEcs = New TEcs()
+	
+	Method init()
+		ecs.addComponentType(POSITION_TYPE)
+		ecs.addComponentType(KILLTAG_TYPE)
+		
+		ecs.addSystem(New TMoveSystem())
+		ecs.addSystem(New TDrawSystem())
+		ecs.addSystem(New TKillSystem())
+
+		Local e:TEntity = ecs.createEntity(TEST_ARCHETYPE)
+		ecs.addEventListener(New TKillEventListener())
+	EndMethod
+	
+	Method update(deltaTime:Float)
+		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
+		ecs.update(deltaTime)
+	EndMethod
+	
+	Method render()
+	EndMethod
+	
+	Method cleanup()
+	EndMethod
+
+EndType
+
+Local myGame:TGame = TGame.CreateGame(800, 600)
+myGame.addScene("TTestScene")
+myGame.start()
