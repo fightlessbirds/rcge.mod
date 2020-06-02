@@ -169,18 +169,30 @@ Type TEcs
 		Return _ObjectListToEntityArray(resultList)
 	EndMethod
 	
+	Rem
+	bbdoc: Add an event listener to the ECS event dispatcher.
+	EndRem
 	Method addEventListener(listener:IEventListener)
 		_eventDispatcher.add(listener)
 	EndMethod
 	
+	Rem
+	bbdoc: Remove an event listener from the ECS event dispatcher.
+	EndRem
 	Method removeEventListener(listener:IEventListener)
 		_eventDispatcher.remove(listener)
 	EndMethod
 	
+	Rem
+	bbdoc: Remove all event listeners from the ECS event dispatcher.
+	EndRem
 	Method removeAllEventListeners()
 		_eventDispatcher.removeAll()
 	EndMethod
 	
+	Rem
+	bbdoc: Trigger an event with the ECS event dispatcher.
+	EndRem
 	Method triggerEvent(eventName:String, context:Object=Null)
 		_eventDispatcher.trigger(eventName, context)
 	EndMethod
