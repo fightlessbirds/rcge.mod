@@ -13,6 +13,13 @@ Type TEntity
 	EndMethod
 	
 	Rem
+	bbdoc: Check if the entity has a specific component.
+	EndRem
+	Method hasComponent:Int(cType:TTypeId)
+		Return _components.contains(cType)
+	EndMethod
+	
+	Rem
 	bbdoc: Get a component object from the entity.
 	returns: The component object.
 	about: Throws an exception if there is no component for @cType.
