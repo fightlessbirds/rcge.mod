@@ -220,17 +220,12 @@ Type TEcs
 				
 				_isUpdating = True
 				Local archetype:TTypeId[] = s.GetArchetype()
+				Local entities:TEntity[] = Null
 				If Len(archetype) = 0
-					'System has no archetype, update it once with an empty list
-					If isIntervalSystem
-						Local intervalS:TIntervalSystem = TIntervalSystem(s)
-						intervalS.update(New TEntity[0], intervalS.time)
-						intervalS.resetTime()
-					Else
-						s.update(New TEntity[0], deltaTime)
-					EndIf
+					entities = New TEntity[0]
+				Else
+					entities = query(archetype)
 				EndIf
-				Local entities:TEntity[] = query(archetype)
 				If Len(entities)
 					If isIntervalSystem
 						Local intervalS:TIntervalSystem = TIntervalSystem(s)
