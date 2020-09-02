@@ -203,21 +203,42 @@ Type TEcs
 		@deltaTime is the number of seconds since the previous update.
 	EndRem
 	Method update(deltaTime:Float)
-		_isUpdating = True
 		Local profilerStartMillis:Int
 		For Local s:TSystem = EachIn _systems
 			Try
 				If profilingEnabled Then profilerStartMillis = MilliSecs()
 				
+				'Check for TIntervalSystem
+				Local isIntervalSystem:Int = TTypeId.ForObject(s).ExtendsType(_IntervalSystemType)
+				If isIntervalSystem
+					Local intervalS:TIntervalSystem = TIntervalSystem(s)
+					intervalS.addTime(deltaTime)
+					If intervalS.time < intervalS.GetInterval()
+						Continue
+					EndIf
+				EndIf
+				
 				_isUpdating = True
 				Local archetype:TTypeId[] = s.GetArchetype()
 				If Len(archetype) = 0
 					'System has no archetype, update it once with an empty list
-					s.update(New TEntity[0], deltaTime)
+					If isIntervalSystem
+						Local intervalS:TIntervalSystem = TIntervalSystem(s)
+						intervalS.update(New TEntity[0], intervalS.time)
+						intervalS.resetTime()
+					Else
+						s.update(New TEntity[0], deltaTime)
+					EndIf
 				EndIf
 				Local entities:TEntity[] = query(archetype)
 				If Len(entities)
-					s.update(entities, deltaTime)
+					If isIntervalSystem
+						Local intervalS:TIntervalSystem = TIntervalSystem(s)
+						intervalS.update(entities, intervalS.time)
+						intervalS.resetTime()
+					Else
+						s.update(entities, deltaTime)
+					EndIf
 				EndIf
 				_isUpdating = False
 				
@@ -255,6 +276,8 @@ Type TEcs
 	
 	Field _eventDispatcher:TEventDispatcher = New TEventDispatcher()
 	
+	Global _IntervalSystemType:TTypeId = TTypeId.ForName("TIntervalSystem")
+	
 	'Private version of query() that returns a TListObject rather than an array
 	Method _query:TObjectList(cType:TTypeId)
 		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cType))
@@ -268,6 +291,7 @@ Type TEcs
 		Return resultList
 	EndMethod
 	
+	'Flush dead entities from the system
 	Method _clearDeadEntities()
 		For Local e:TEntity = EachIn _deadEntities
 			Local id:Int = e._id

@@ -6,11 +6,12 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.3.0"
+ModuleInfo "Version: 0.3.1"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: Added TIntervalSystem class which supports updating entities at set time intervals."
 ModuleInfo "History: 0.3.0"
 ModuleInfo "History: Added an event dispatcher to TEcs. Event listeners can be added, removed and triggered with optional context data."
 ModuleInfo "Histroy: Added a component operation buffer that is flushed after each system is update for better concurrency."
@@ -37,5 +38,6 @@ Import rcge.pool
 
 Include "TEntity.bmx"
 Include "TSystem.bmx"
+Include "TIntervalSystem.bmx"
 Include "TComponentOperationBuffer.bmx"
 Include "TEcs.bmx"
