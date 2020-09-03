@@ -96,7 +96,7 @@ Type TIntervalMoveSystem Extends TIntervalSystem
 	EndFunction
 
 	Function GetArchetype:TTypeId[]()
-		Return [INTERVAL_TYPE]
+		Return [POSITION_TYPE, INTERVAL_TYPE]
 	EndFunction
 EndType
 
@@ -110,7 +110,7 @@ Type TDrawSystem Extends TSystem
 	EndMethod
 
 	Function GetArchetype:TTypeId[]()
-		Return [DRAWABLE_TYPE]
+		Return [POSITION_TYPE, DRAWABLE_TYPE]
 	EndFunction
 EndType
 

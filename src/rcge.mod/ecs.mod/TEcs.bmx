@@ -10,18 +10,18 @@ Type TEcs
 	bbdoc: Add a system to the ECS.
 	about: Throws an exception if duplicate systems are added.
 	EndRem
-	Method addSystem(s:TSystem)
-		If s = Null
+	Method addSystem(system:TSystem)
+		If system = Null
 			Throw("TEcs.addSystem(): Null argument")
 		EndIf
-		Local sType:TTypeId = TTypeId.ForObject(s)
+		Local sType:TTypeId = TTypeId.ForObject(system)
 		For Local i:TSystem = EachIn _systems
 			If TTypeId.ForObject(i) = sType
 				Throw("TEcs.addSystem(): Cannot add duplicate system " + sType.name())
 			EndIf
 		Next
-		_systems.addLast(s)
-		s.addNotify(Self)
+		_systems.addLast(system)
+		system.addNotify(Self)
 	EndMethod
 	
 	Rem
@@ -134,28 +134,6 @@ Type TEcs
 		EndIf
 		Local resultList:TObjectList = _query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
-			Local compareList:TObjectList = _query(archetype[i])
-			For Local e:TEntity = EachIn compareList
-				If Not resultList.contains(e) Then resultList.addLast(e)
-			Next
-		Next
-		Return _ObjectListToEntityArray(resultList)
-	EndMethod
-	
-	Rem
-	bbdoc: Get an array of entities strictly matching an archetype.
-	about: Any entities with extra components will be excluded from the results.
-		Throws an exception if any of the component types in @archetype are missing from the ECS.
-	EndRem
-	Method queryStrict:TEntity[](archetype:TTypeId[])
-		Local componentCount:Int = Len(archetype)
-		If componentCount = 0
-			Return New TEntity[0]
-		ElseIf componentCount = 1
-			Return query(archetype[0])
-		EndIf
-		Local resultList:TObjectList = _query(archetype[0])
-		For Local i:Int = 1 Until Len(archetype)
 			Local relationship:TIntMap = TIntMap(_relationships.valueForKey(archetype[i]))
 			If relationship = Null
 				Throw("TEcs.queryStrict(): Undefined component " + archetype[i].name())
@@ -164,6 +142,27 @@ Type TEcs
 				If Not relationship.contains(e._id)
 					resultList.remove(e)
 				EndIf
+			Next
+		Next
+		Return _ObjectListToEntityArray(resultList)
+	EndMethod
+	
+	Rem
+	bbdoc: Get an array of entities that have any components in common with an archetype.
+	about: Throws an exception if any of the component types in @archetype are missing from the ECS.
+	EndRem
+	Method queryLoose:TEntity[](archetype:TTypeId[])
+		Local componentCount:Int = Len(archetype)
+		If componentCount = 0
+			Return New TEntity[0]
+		ElseIf componentCount = 1
+			Return query(archetype[0])
+		EndIf
+		Local resultList:TObjectList = _query(archetype[0])
+		For Local i:Int = 1 Until Len(archetype)
+			Local compareList:TObjectList = _query(archetype[i])
+			For Local e:TEntity = EachIn compareList
+				If Not resultList.contains(e) Then resultList.addLast(e)
 			Next
 		Next
 		Return _ObjectListToEntityArray(resultList)
@@ -204,22 +203,23 @@ Type TEcs
 	EndRem
 	Method update(deltaTime:Float)
 		Local profilerStartMillis:Int
-		For Local s:TSystem = EachIn _systems
+		For Local system:TSystem = EachIn _systems
 			Try
 				If profilingEnabled Then profilerStartMillis = MilliSecs()
 				
 				'Check for TIntervalSystem
-				Local isIntervalSystem:Int = TTypeId.ForObject(s).ExtendsType(_IntervalSystemType)
+				Local isIntervalSystem:Int = TTypeId.ForObject(system).ExtendsType(_IntervalSystemType)
+				Local intervalSystem:TIntervalSystem = Null
 				If isIntervalSystem
-					Local intervalS:TIntervalSystem = TIntervalSystem(s)
-					intervalS.addTime(deltaTime)
-					If intervalS.time < intervalS.GetInterval()
+					intervalSystem = TIntervalSystem(system)
+					intervalSystem.addTime(deltaTime)
+					If intervalSystem.time < intervalSystem.GetInterval()
 						Continue
 					EndIf
 				EndIf
 				
 				_isUpdating = True
-				Local archetype:TTypeId[] = s.GetArchetype()
+				Local archetype:TTypeId[] = system.GetArchetype()
 				Local entities:TEntity[] = Null
 				If Len(archetype) = 0
 					entities = New TEntity[0]
@@ -228,11 +228,10 @@ Type TEcs
 				EndIf
 				If Len(entities)
 					If isIntervalSystem
-						Local intervalS:TIntervalSystem = TIntervalSystem(s)
-						intervalS.update(entities, intervalS.time)
-						intervalS.resetTime()
+						intervalSystem.update(entities, intervalSystem.time)
+						intervalSystem.resetTime()
 					Else
-						s.update(entities, deltaTime)
+						system.update(entities, deltaTime)
 					EndIf
 				EndIf
 				_isUpdating = False
@@ -241,10 +240,10 @@ Type TEcs
 				_clearDeadEntities()
 				If profilingEnabled
 					Local updateTookMillis:Int = MilliSecs() - profilerStartMillis
-					LogInfo(TTypeId.ForObject(s).name() + " updated in ms: " + updateTookMillis)
+					LogInfo(TTypeId.ForObject(system).name() + " updated in ms: " + updateTookMillis)
 				EndIf
 			Catch ex:Object
-				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(s).name() + ": " + ex.toString())
+				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(system).name() + ": " + ex.toString())
 			EndTry
 		Next
 	EndMethod
