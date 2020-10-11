@@ -19,7 +19,7 @@ EndType
 Global TEST_ARCHETYPE:TTypeId[] = [POSITION_TYPE, KILLTAG_TYPE]
 
 Type TMoveSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			pos.x = MouseX()
@@ -27,13 +27,13 @@ Type TMoveSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE]
 	EndFunction
 EndType
 
 Type TKillSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			If MouseHit(1)
 				LogInfo("Mouse button pressed, triggering kill event")
@@ -42,13 +42,13 @@ Type TKillSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [KILLTAG_TYPE]
 	EndFunction
 EndType
 
 Type TDrawSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			SetColor(255, 0, 0)
@@ -56,17 +56,17 @@ Type TDrawSystem Extends TSystem
 		Next
 	EndMethod
 	
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE]
 	EndFunction
 EndType
 
 Type TKillEventListener Implements IEventListener
-	Method getEventName:String()
+	Method getEventName:String() Override
 		Return "Kill"
 	EndMethod
 		
-	Method onEvent(dispatcher:TEventDispatcher, context:Object=Null)
+	Method onEvent(dispatcher:TEventDispatcher, context:Object=Null) Override
 		dispatcher.remove(Self)
 		Local e:TEntity = TEntity(context)
 		e.kill()
@@ -77,7 +77,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 	
-	Method init()
+	Method init() Override
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(KILLTAG_TYPE)
 		
@@ -89,15 +89,15 @@ Type TTestScene Extends TScene
 		ecs.addEventListener(New TKillEventListener())
 	EndMethod
 	
-	Method update(deltaTime:Float)
+	Method update(deltaTime:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		ecs.update(deltaTime)
 	EndMethod
 	
-	Method render()
+	Method render() Override
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 	EndMethod
 
 EndType

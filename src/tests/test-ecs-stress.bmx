@@ -31,7 +31,7 @@ EndType
 Global DRAWABLE_TYPE:TTypeId = TTypeId.ForName("TDrawable")
 
 Type TMoveSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			Local x:Int = pos.x
@@ -55,13 +55,13 @@ Type TMoveSystem Extends TSystem
 		Next
 	EndMethod
 
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE, DRAWABLE_TYPE]
 	EndFunction
 EndType
 
 Type TDrawSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			Local drawable:TDrawable = TDrawable(e.getComponent(DRAWABLE_TYPE))
@@ -69,13 +69,13 @@ Type TDrawSystem Extends TSystem
 		Next
 	EndMethod
 
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE, DRAWABLE_TYPE]
 	EndFunction
 EndType
 
 Type TKillSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		If KeyHit(Key_Backspace)
 			LogInfo("Killing test entities")
 			For Local e:TEntity = EachIn entities
@@ -84,7 +84,7 @@ Type TKillSystem Extends TSystem
 		EndIf
 	EndMethod
 	
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [KILLTAG_TYPE]
 	EndFunction
 EndType
@@ -93,7 +93,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 
-	Method Init()
+	Method Init() Override
 		ecs.profilingEnabled = True
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(DRAWABLE_TYPE)
@@ -103,7 +103,7 @@ Type TTestScene Extends TScene
 		ecs.addSystem(New TKillSystem())
 	EndMethod
 	
-	Method update(deltaTime:Float)
+	Method update(deltaTime:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		If KeyHit(Key_Space)
 			'add some test entities
@@ -114,12 +114,12 @@ Type TTestScene Extends TScene
 		ecs.update(deltaTime)
 	EndMethod
 	
-	Method render()
+	Method render() Override
 		DrawText("Press spacebar to create 100 entities.", 20, 20)
 		DrawText("Press backspace to kill all entities.", 20, 80)
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 	EndMethod
 	
 	Method addTestEntity()

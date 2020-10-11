@@ -6,11 +6,11 @@ Import rcge.game
 
 Type TTestSceneA Extends TScene
 	
-	Method init()
+	Method init() Override
 		Print("test init scene A")
 	EndMethod
 	
-	Method update(deltaTime:Float)
+	Method update(deltaTime:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		If KeyHit(Key_Enter)
 			TGame.GetInstance().setNextScene("TTestSceneB")
@@ -18,11 +18,11 @@ Type TTestSceneA Extends TScene
 		EndIf
 	EndMethod
 	
-	Method render()
+	Method render() Override
 		DrawText("It works! This is scene A, press ENTER for scene B", 100, 100)
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 		Print("test cleanup scene A")
 	EndMethod
 
@@ -30,11 +30,11 @@ EndType
 
 Type TTestSceneB Extends TScene
 	
-	Method init()
+	Method init() Override
 		Print("test init scene B")
 	EndMethod
 	
-	Method update(deltaTime:Float)
+	Method update(deltaTime:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		If KeyHit(Key_Enter)
 			TGame.GetInstance().setNextScene("TTestSceneA")
@@ -42,11 +42,11 @@ Type TTestSceneB Extends TScene
 		EndIf
 	EndMethod
 	
-	Method render()
+	Method render() Override
 		DrawText(":) This is scene B, press ENTER for scene A", 100, 100)
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 		Print("test cleanup scene B")
 	EndMethod
 

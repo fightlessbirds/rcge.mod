@@ -9,18 +9,18 @@ SuperStrict
 Import rcge.game
 
 Type TMyScene Extends TScene
-	Method init()
+	Method init() Override
 	EndMethod
 	
-	Method update(dt:Float)
+	Method update(dt:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 	EndMethod
 	
-	Method render()
+	Method render() Override
 		DrawText("It works!", 100, 100)
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 	EndMethod
 EndType
 
@@ -63,7 +63,7 @@ EndType
 Systems contain the logic that is applied to a specific archetype.
 ``` BlitzMax
 Type TEnemyMissileSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			'The system can get whatever component it needs from the entity.
 			Local pos:TPosRect = TPosRect(e.getComponent(POSRECT_TYPE))
@@ -73,7 +73,7 @@ Type TEnemyMissileSystem Extends TSystem
 	EndMethod
 	
 	'Archetypes allow systems to say which entities they care about.
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [ENEMY_MISSILE_ARCHETYPE]
 	EndFunction
 EndType
@@ -98,7 +98,7 @@ Global MESSAGE_TYPE:TTypeId = TTypeId.ForName("TMessage")
 
 'System definition
 Type TTestSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			'Typecast the retrieved component. It is assumed that all
 			'component types are known at compile time.
@@ -108,7 +108,7 @@ Type TTestSystem Extends TSystem
 	EndMethod
 	
 	'Let the ECS know which entities this system will process.
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [MESSAGE_TYPE]
 	EndFunction
 EndType

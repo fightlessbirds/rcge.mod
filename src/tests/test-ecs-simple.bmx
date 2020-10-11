@@ -13,7 +13,7 @@ Global MESSAGE_TYPE:TTypeId = TTypeId.ForName("TMessage")
 
 'System definition
 Type TTestSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			'Typecast the retrieved component. It is assumed that all
 			'component types are known at compile time.
@@ -23,7 +23,7 @@ Type TTestSystem Extends TSystem
 	EndMethod
 	
 	'Let the ECS know which entities this system will process.
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [MESSAGE_TYPE]
 	EndFunction
 EndType

@@ -31,7 +31,7 @@ EndType
 Global INTERVAL_TYPE:TTypeId = TTypeId.ForName("TInterval")
 
 Type TMoveSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			'Skip processing entities with INTERVAL_TYPE
 			If e.hasComponent(INTERVAL_TYPE) Then Continue
@@ -57,13 +57,13 @@ Type TMoveSystem Extends TSystem
 		Next
 	EndMethod
 
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE]
 	EndFunction
 EndType
 
 Type TIntervalMoveSystem Extends TIntervalSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			Local x:Int = pos.x
@@ -87,17 +87,17 @@ Type TIntervalMoveSystem Extends TIntervalSystem
 		Next
 	EndMethod
 	
-	Function GetInterval:Float()
+	Function GetInterval:Float() Override
 		Return 0.3
 	EndFunction
 
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE, INTERVAL_TYPE]
 	EndFunction
 EndType
 
 Type TDrawSystem Extends TSystem
-	Method update(entities:TEntity[], deltaTime:Float)
+	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
 			Local pos:TPosition = TPosition(e.getComponent(POSITION_TYPE))
 			Local drawable:TDrawable = TDrawable(e.getComponent(DRAWABLE_TYPE))
@@ -105,7 +105,7 @@ Type TDrawSystem Extends TSystem
 		Next
 	EndMethod
 
-	Function GetArchetype:TTypeId[]()
+	Function GetArchetype:TTypeId[]() Override
 		Return [POSITION_TYPE, DRAWABLE_TYPE]
 	EndFunction
 EndType
@@ -114,7 +114,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 
-	Method init()
+	Method init() Override
 		ecs.profilingEnabled = True
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(INTERVAL_TYPE)
@@ -140,15 +140,15 @@ Type TTestScene Extends TScene
 		EndIf
 	EndMethod
 	
-	Method update(deltaTime:Float)
+	Method update(deltaTime:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		ecs.update(deltaTime)
 	EndMethod
 	
-	Method render()
+	Method render() Override
 	EndMethod
 	
-	Method cleanup()
+	Method cleanup() Override
 	EndMethod
 	
 EndType
