@@ -1,13 +1,9 @@
 SuperStrict
 
-?win32
-Framework SDL.d3d9sdlmax2d
-?Not win32
 Framework SDL.gl2sdlmax2d
-?
 
 Import BRL.PNGLoader
-Import BRL.Random
+Import BRL.RandomDefault
 
 Import rcge.game
 Import rcge.ecs
