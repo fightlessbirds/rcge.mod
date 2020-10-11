@@ -85,11 +85,7 @@ Archetypes are a combination of components held by one or more entities. They ar
 ``` BlitzMax
 SuperStrict
 
-?win32
-Framework SDL.d3d9sdlmax2d
-?Not win32
 Framework SDL.gl2sdlmax2d
-?
 
 Import rcge.ecs
 
