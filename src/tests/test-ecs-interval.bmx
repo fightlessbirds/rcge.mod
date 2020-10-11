@@ -115,7 +115,7 @@ Type TTestScene Extends TScene
 	Field ecs:TEcs = New TEcs()
 
 	Method init() Override
-		ecs.profilingEnabled = True
+		ecs.isProfilingEnabled = True
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(INTERVAL_TYPE)
 		ecs.addComponentType(DRAWABLE_TYPE)

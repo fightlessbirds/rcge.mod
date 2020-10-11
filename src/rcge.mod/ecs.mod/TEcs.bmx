@@ -4,7 +4,7 @@ about:
 EndRem
 Type TEcs
 	
-	Field profilingEnabled:Int = False
+	Field isProfilingEnabled:Int = False
 	
 	Rem
 	bbdoc: Add a system to the ECS.
@@ -205,12 +205,11 @@ Type TEcs
 		Local profilerStartMillis:Int
 		For Local system:TSystem = EachIn _systems
 			Try
-				If profilingEnabled Then profilerStartMillis = MilliSecs()
+				If isProfilingEnabled Then profilerStartMillis = MilliSecs()
 				
 				'Check for TIntervalSystem
-				Local isIntervalSystem:Int = TTypeId.ForObject(system).ExtendsType(_IntervalSystemType)
-				Local intervalSystem:TIntervalSystem = Null
-				If isIntervalSystem
+				Local intervalSystem:TIntervalSystem = TIntervalSystem(system)
+				If intervalSystem
 					intervalSystem = TIntervalSystem(system)
 					intervalSystem.addTime(deltaTime)
 					If intervalSystem.time < intervalSystem.GetInterval()
@@ -227,7 +226,7 @@ Type TEcs
 					entities = query(archetype)
 				EndIf
 				If Len(entities)
-					If isIntervalSystem
+					If intervalSystem
 						intervalSystem.update(entities, intervalSystem.time)
 						intervalSystem.resetTime()
 					Else
@@ -238,7 +237,7 @@ Type TEcs
 				
 				_componentOperationBuffer.flush()
 				_clearDeadEntities()
-				If profilingEnabled
+				If isProfilingEnabled
 					Local updateTookMillis:Int = MilliSecs() - profilerStartMillis
 					LogInfo(TTypeId.ForObject(system).name() + " updated in ms: " + updateTookMillis)
 				EndIf
@@ -269,8 +268,6 @@ Type TEcs
 	Field _systems:TList = New TList()
 	
 	Field _eventDispatcher:TEventDispatcher = New TEventDispatcher()
-	
-	Global _IntervalSystemType:TTypeId = TTypeId.ForName("TIntervalSystem")
 	
 	'Private version of query() that returns a TListObject rather than an array
 	Method _query:TObjectList(cType:TTypeId)
