@@ -2,6 +2,8 @@
 # RCGE
 Random Cruft Game Engine - A BlitzMax game framework
 
+(Requires BlitzMax v0.120.3.41)
+
 ### game.mod
 ##### Usage Example
 ``` BlitzMax
