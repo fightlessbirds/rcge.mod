@@ -23,7 +23,7 @@ bbdoc: Linear interpolation
 about: a --- b
 EndRem
 Function InterpolateLinear:Double(a:Float,b:Float,t:Double)
-	Return a*(1-x)+b*t
+	Return a*(1-t)+b*t
 End Function
 
 Rem
