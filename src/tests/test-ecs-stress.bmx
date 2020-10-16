@@ -3,7 +3,7 @@ SuperStrict
 Framework SDL.gl2sdlmax2d
 
 Import BRL.PNGLoader
-Import BRL.Random
+Import BRL.RandomDefault
 
 Import rcge.game
 Import rcge.ecs
