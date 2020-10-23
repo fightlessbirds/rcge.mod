@@ -1,5 +1,11 @@
 SuperStrict
 
+?win32
+Framework SDL.D3D9SDLMax2D
+?Not win32
+Framework SDL.GL2SDLMax2D
+?
+
 Type TMyScene Extends TScene
     Field ecs:TEcs = New TEcs()
 
@@ -36,52 +42,73 @@ Type TDrawable
 EndType
 Global DRAWABLE_TYPE:TTypeId = TTypeId.ForName("TDrawable")
 
-Enum ETweenType
-    Linear
-EndEnum
-
-Type TTween
-    Field type:ETweenType
+Type TTween Implements IPoolable
+	Const LINEAR = 1
+	
+    Field tweenType:Int
     
     Field componentType:TTypeId
     Field fieldName:String
     
     Field start:Float
-    Field end:Float
+    Field finish:Float
     Field duration:Float
-    Field position:Float
-    
-    Function CreateTween:TTween(tweenType:ETweenType, componentType:TTypeId, field:String, start:Float, end:Float, duration:Float, eventListener:ITweenEventListener=Null)
-        
-    EndFunction
+	Field position:Float
+	
+	Field eventListener:ITweenEventListener
+	
+	Method destroy()
+		TweenPool.free(Self)
+	EndMethod
+	
+    Method reset:()
+		Self.tweenType = 0
+		Self.componentType = componentType
+		Self.fieldName = fieldName
+		Self.start = start
+		Self.finish = finish
+		Self.duration = duration
+		Self.eventListener = eventListener
+	EndMethod
+	
+	Function CreateTween:TTween(tweenType:Int, componentType:TTypeId, fieldName:String, start:Float, finish:Float, duration:Float, eventListener:ITweenEventListener=Null)
+		Local tween:TTween = TweenPool.obtain()
+		tween.tweenType = tweenType
+		tween.componentType = componentType
+		tween.fieldName = fieldName
+		tween.start = start
+		tween.finish = finish
+		tween.duration = duration
+		tween.eventListener = eventListener
+		Return tween
+	EndFunction
     
     
     Private
     
     Global TweenPool:TPool<TTween> = New TPool<TTween>()
-    
-    'Private constructor
-    Method New()
-    EndMethod
 EndType
 
 Type TTweenable
     Field tweens:TList = New TList()
     
-    Method startTween(tweenType:ETweenType, componentType:TTypeId, field:String, start:Float, end:Float, duration:Float, eventListener:ITweenEventListener=Null)
-        
-    EndMethod
-    
-    Method stopTween(componentType:TTypeId, field:String)
-    
+    Method startTween(tweenType:Int, componentType:TTypeId, fieldName:String, start:Float, finish:Float, duration:Float, eventListener:ITweenEventListener=Null)
+		tweens.addLast(TTween.CreateTween(tweenType, componentType, fieldName, start, finish, duration, eventListener))
     EndMethod
     
     Method stopTweens(componentType:TTypeId)
-    
+		For Local tween:TTween = EachIn tweens
+			If tween.tweenType = componentType
+				tweens.remove(tween)
+				tween.destroy()
+			EndIf
+		Next
     EndMethod
     
     Method stopAllTweens()
-    
+		For Local tween:TTween = EachIn tweens
+			tween.destroy()
+		Next
     EndMethod
 EndType
 Global TWEENABLE_TYPE:TTypeId = TTypeId.forName("TTweenable")
