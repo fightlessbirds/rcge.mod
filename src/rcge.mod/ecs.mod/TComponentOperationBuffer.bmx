@@ -2,8 +2,8 @@ Private
 
 Type TComponentOperationBuffer
 	
-	Const OP_BIND:Int = 0
-	Const OP_UNBIND:Int = 1
+	Const OP_BIND:Int = 1
+	Const OP_UNBIND:Int = 2
 	
 	Method New(ecs:TEcs)
 		_ecs = ecs
