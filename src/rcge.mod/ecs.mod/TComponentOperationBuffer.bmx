@@ -50,7 +50,7 @@ Type TComponentOperationBuffer
 	
 EndType
 
-Type TComponentOperation
+Type TComponentOperation Implements IPoolable
 	
 	Field op:Int
 	Field relationship:TIntMap
@@ -64,6 +64,14 @@ Type TComponentOperation
 		Self.e = e
 		Self.cType = cType
 		Self.c = c
+	EndMethod
+	
+	Method reset() Override
+		op = 0
+		relationship = Null
+		e = Null
+		cType = Null
+		c = Null
 	EndMethod
 	
 EndType
