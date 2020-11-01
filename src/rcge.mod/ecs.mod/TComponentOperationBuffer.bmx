@@ -2,8 +2,8 @@ Private
 
 Type TComponentOperationBuffer
 	
-	Const OP_BIND:Int = 0
-	Const OP_UNBIND:Int = 1
+	Const OP_BIND:Int = 1
+	Const OP_UNBIND:Int = 2
 	
 	Method New(ecs:TEcs)
 		_ecs = ecs
@@ -50,7 +50,7 @@ Type TComponentOperationBuffer
 	
 EndType
 
-Type TComponentOperation
+Type TComponentOperation Implements IPoolable
 	
 	Field op:Int
 	Field relationship:TIntMap
@@ -64,6 +64,14 @@ Type TComponentOperation
 		Self.e = e
 		Self.cType = cType
 		Self.c = c
+	EndMethod
+	
+	Method reset() Override
+		op = 0
+		relationship = Null
+		e = Null
+		cType = Null
+		c = Null
 	EndMethod
 	
 EndType
