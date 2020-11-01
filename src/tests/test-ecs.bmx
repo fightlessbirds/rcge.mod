@@ -4,7 +4,7 @@ Framework SDL.gl2sdlmax2d
 
 Import rcge.game
 Import rcge.ecs
-Import rcge.log
+Import rcge.logger
 
 Type TPosition
 	Field x:Float

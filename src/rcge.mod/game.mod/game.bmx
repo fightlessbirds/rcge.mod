@@ -25,7 +25,7 @@ Import BRL.Graphics
 Import BRL.Reflection
 
 Import rcge.deltatimer
-Import rcge.log
+Import rcge.logger
 
 Rem
 bbdoc: Game class

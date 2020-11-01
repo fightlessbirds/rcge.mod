@@ -4,7 +4,7 @@ Framework SDL.gl2sdlmax2d
 
 Import rcge.game
 Import rcge.ecs
-Import rcge.log
+Import rcge.logger
 
 Global POSITION_TYPE:TTypeId = TTypeId.ForName("TPosition")
 Type TPosition
@@ -77,7 +77,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 	
-	Method init() Override
+	Method Init() Override
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(KILLTAG_TYPE)
 		

@@ -1,6 +1,6 @@
 SuperStrict
 
-Module rcge.log
+Module rcge.logger
 
 Import BRL.StandardIO
 Import BRL.StringBuilder

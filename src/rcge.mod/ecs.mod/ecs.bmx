@@ -33,7 +33,7 @@ Import BRL.ObjectList
 Import BRL.Reflection
 
 Import rcge.event
-Import rcge.log
+Import rcge.logger
 Import rcge.pool
 
 Include "TEntity.bmx"

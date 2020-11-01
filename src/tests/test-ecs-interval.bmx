@@ -7,7 +7,7 @@ Import BRL.RandomDefault
 
 Import rcge.game
 Import rcge.ecs
-Import rcge.log
+Import rcge.logger
 
 Const SCREEN_WIDTH:Int = 800
 Const SCREEN_HEIGHT:Int = 600
