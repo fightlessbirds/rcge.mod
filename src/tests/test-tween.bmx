@@ -7,18 +7,33 @@ Framework SDL.GL2SDLMax2D
 ?
 
 Type TMyScene Extends TScene
-    Field ecs:TEcs = New TEcs()
+	Field ecs:TEcs = New TEcs()
+	
+	Field testEntity:TEntity
 
 	Method init() Override
 	    ecs.addComponent(POSITION_TYPE)
-	    ecs.addComponent(TWEEN_TYPE)
-	    ecs.addComponent(DRAWABLE_TYPE)
+		ecs.addComponent(DRAWABLE_TYPE)
+		ecs.addComponent(TWEEN_TYPE)
 	    ecs.addSystem(New TTweenSystem())
-	    ecs.addSystem(New TDrawSystem())
+		ecs.addSystem(New TDrawSystem())
+		
+		testEntity = ecs.createEntity()
+		testEntity.bind(POSITION_TYPE)
+		Local drawable:TDrawable = TDrawable(testEntity.bind(DRAWABLE_TYPE))
+		drawable.image = LoadImage("test-image.png")
+		testEntity.bind(TWEEN_TYPE)
 	EndMethod
 	
 	Method update(dt:Float) Override
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
+		If MouseHit(1)
+			Local tweenable:TTweenable = TTweenable(testEntity.getComponent(TWEEN_TYPE))
+			Local pos:TPosition = TPosition(testEntity.getComponent(POSITION_TYPE))
+			tweenable.stopAllTweens()
+			tweenable.startTween(ETweenType.LINEAR, POSITION_TYPE, "x", pos.x, MouseX(), 2.0)
+			tweenable.startTween(ETweenType.LINEAR, POSITION_TYPE, "y", pos.y, MouseY(), 2.0)
+		EndIf
 		ecs.update(dt)
 	EndMethod
 	
@@ -42,10 +57,12 @@ Type TDrawable
 EndType
 Global DRAWABLE_TYPE:TTypeId = TTypeId.ForName("TDrawable")
 
+Enum ETweenType
+	LINEAR
+EndEnum
+
 Type TTween Implements IPoolable
-	Const LINEAR = 1
-	
-    Field tweenType:Int
+	Field tweenType:Int
     
     Field componentType:TTypeId
     Field fieldName:String
@@ -61,17 +78,17 @@ Type TTween Implements IPoolable
 		TweenPool.free(Self)
 	EndMethod
 	
-    Method reset:()
-		Self.tweenType = 0
-		Self.componentType = componentType
-		Self.fieldName = fieldName
-		Self.start = start
-		Self.finish = finish
-		Self.duration = duration
-		Self.eventListener = eventListener
+    Method reset()
+		Self.tweenType = ETweenType.LINEAR
+		Self.componentType = Null
+		Self.fieldName = Null
+		Self.start = 0.0
+		Self.finish = 0.0
+		Self.duration = 0.0
+		Self.eventListener = Null
 	EndMethod
 	
-	Function CreateTween:TTween(tweenType:Int, componentType:TTypeId, fieldName:String, start:Float, finish:Float, duration:Float, eventListener:ITweenEventListener=Null)
+	Function CreateTween:TTween(tweenType:ETweenType, componentType:TTypeId, fieldName:String, start:Float, finish:Float, duration:Float, eventListener:ITweenEventListener=Null)
 		Local tween:TTween = TweenPool.obtain()
 		tween.tweenType = tweenType
 		tween.componentType = componentType
@@ -107,6 +124,7 @@ Type TTweenable
     
     Method stopAllTweens()
 		For Local tween:TTween = EachIn tweens
+			tweens.remove(tween)
 			tween.destroy()
 		Next
     EndMethod
@@ -120,7 +138,7 @@ EndInterface
 Type TTweenSystem Extends TSystem
 	Method update(entities:TEntity[], deltaTime:Float) Override
 		For Local e:TEntity = EachIn entities
-			
+			'TODO update tweens
 		Next
 	EndMethod
 	
