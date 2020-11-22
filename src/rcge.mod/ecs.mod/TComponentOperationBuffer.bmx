@@ -10,14 +10,12 @@ Type TComponentOperationBuffer
 	EndMethod
 	
 	Method enqueueBind(relationship:TIntMap, e:TEntity, cType:TTypeId, c:Object)
-		Local op:TComponentOperation = _pool.obtain()
-		op.init(OP_BIND, relationship, e, cType, c)
+		Local op:TComponentOperation = New TComponentOperation(OP_BIND, relationship, e, cType, c)
 		_componentOperations.addLast(op)
 	EndMethod
 	
 	Method enqueueUnbind(relationship:TIntMap, e:TEntity, cType:TTypeId)
-		Local op:TComponentOperation = _pool.obtain()
-		op.init(OP_UNBIND, relationship, e, cType, Null)
+		Local op:TComponentOperation = New TComponentOperation(OP_UNBIND, relationship, e, cType, Null)
 		_componentOperations.addLast(op)
 	EndMethod
 	
@@ -35,7 +33,6 @@ Type TComponentOperationBuffer
 					e._components.remove(operation.cType)
 					operation.relationship.remove(e.getId())
 			EndSelect
-			_pool.free(operation)
 		Forever
 	EndMethod
 	
@@ -46,11 +43,9 @@ Type TComponentOperationBuffer
 	
 	Field _componentOperations:Tlist = New Tlist()
 	
-	Field _pool:TPool<TComponentOperation> = New TPool<TComponentOperation>()
-	
 EndType
 
-Type TComponentOperation Implements IPoolable
+Type TComponentOperation
 	
 	Field op:Int
 	Field relationship:TIntMap
@@ -58,20 +53,12 @@ Type TComponentOperation Implements IPoolable
 	Field cType:TTypeId
 	Field c:Object
 	
-	Method init(op:Int, relationship:TIntMap, e:TEntity, cType:TTypeId, c:Object)
+	Method New(op:Int, relationship:TIntMap, e:TEntity, cType:TTypeId, c:Object)
 		Self.op = op
 		Self.relationship = relationship
 		Self.e = e
 		Self.cType = cType
 		Self.c = c
-	EndMethod
-	
-	Method reset() Override
-		op = 0
-		relationship = Null
-		e = Null
-		cType = Null
-		c = Null
 	EndMethod
 	
 EndType

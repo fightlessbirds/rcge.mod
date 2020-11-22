@@ -65,6 +65,7 @@ Type TEntity
 		_alive = False
 	EndMethod
 	
+	
 	Private
 
 	Field _id:Int
