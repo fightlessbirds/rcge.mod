@@ -22,7 +22,7 @@ Rem
 bbdoc: Linear interpolation
 about: a --- b
 EndRem
-Function InterpolateLinear:Double(a:Float,b:Float,t:Double)
+Function InterpolateLinear:Float(a:Float,b:Float,t:Float)
 	Return a*(1-t)+b*t
 End Function
 
@@ -30,7 +30,7 @@ Rem
 bbdoc: Cosine interpolation
 about: a --- b
 EndRem
-Function InterpolateCosine:Double(a:Float,b:Float,t:Double)
+Function InterpolateCosine:Float(a:Float,b:Float,t:Float)
 	Local f:Float=(1-Cos(t*180))*.5
 	Return a*(1-f)+b*f
 End Function
@@ -39,7 +39,7 @@ Rem
 bbdoc: Cubic interpolation
 about: a     b --- c     d
 EndRem
-Function InterpolateCubic:Double(a:Float,b:Float,c:Float,d:Float,t:Double)
+Function InterpolateCubic:Float(a:Float,b:Float,c:Float,d:Float,t:Float)
 	Local p:Float=(d-c)-(a-b)
 	Return p*t*t*t+((a-b)-p)*t*t+(c-a)*t+b
 End Function
@@ -48,9 +48,9 @@ Rem
 bbdoc: Hermite interpolation
 about: a     b --- c     d
 EndRem
-Function InterpolateHermite:Double(a:Float,b:Float,c:Float,d:Float,t:Double,tension:Float,bias:Float)
-	Local t2:Double=t*t
-	Local t3:Double=t*t2
-	Local tb:Double=(1+bias)*(1-tension)/2:Double
+Function InterpolateHermite:Float(a:Float,b:Float,c:Float,d:Float,t:Float,tension:Float,bias:Float)
+	Local t2:Float=t*t
+	Local t3:Float=t*t2
+	Local tb:Float=(1+bias)*(1-tension)/2.0
 	Return (2*t3-3*t2+1)*b+(((t3-2*t2+t)*(a+c))+(t3-t2)*(b+d))*tb+(3*t2-2*t3)*c
 End Function
