@@ -91,7 +91,6 @@ Type TTween
 	Field eventListener:ITweenEventListener
 	
 	Method New(tweenType:ETweenType, componentType:TTypeId, fieldName:String, start:Float, finish:Float, duration:Float, eventListener:ITweenEventListener=Null)
-		'If start = finish Then Throw("TTween.New(): start and finish can't be equal")
 		If duration <= 0 Then Throw("TTween.New(): duration must be greater than zero")
 		Self.tweenType = tweenType
 		Self.componentType = componentType
