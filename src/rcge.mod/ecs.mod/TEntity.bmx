@@ -13,6 +13,13 @@ Type TEntity
 	EndMethod
 	
 	Rem
+	bbdoc: Get the ECS this entity belongs to.
+	EndRem
+	Method getEcs:TEcs()
+		Return _ecs
+	EndMethod
+	
+	Rem
 	bbdoc: Check if the entity has a specific component.
 	EndRem
 	Method hasComponent:Int(cType:TTypeId)
