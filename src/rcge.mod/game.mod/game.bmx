@@ -6,7 +6,7 @@ about: Game window and scene management.
 EndRem
 Module rcge.game
 
-ModuleInfo "Version: 0.2.0"
+ModuleInfo "Version: 0.2.1"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
@@ -129,6 +129,13 @@ Type TGame
 			EndTry
 		Wend
 		LogInfo("Exiting game")
+	EndMethod
+	
+	Rem
+	bbdoc: Get the current running scene.
+	EndRem
+	Method getCurrentScene:TScene()
+		Return _currentScene
 	EndMethod
 	
 	Rem
