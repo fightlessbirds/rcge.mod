@@ -81,7 +81,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 	
-	Method Init() Override
+	Method initialize() Override
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(KILLTAG_TYPE)
 		

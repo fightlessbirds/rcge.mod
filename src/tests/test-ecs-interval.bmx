@@ -118,7 +118,7 @@ Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
 
-	Method init() Override
+	Method initialize() Override
 		ecs.isProfilingEnabled = True
 		ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(INTERVAL_TYPE)

@@ -6,7 +6,7 @@ about: Game window and scene management.
 EndRem
 Module rcge.game
 
-ModuleInfo "Version: 0.2.1"
+ModuleInfo "Version: 0.2.2"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
@@ -106,7 +106,7 @@ Type TGame
 			scene.isFinished = False
 			LogInfo("Initializing scene: " + TTypeId.ForObject(scene).name())
 			Try
-				scene.init()
+				scene.initialize()
 				'Update _deltaTimer between scene switches to avoid inflating deltaTime
 				_deltaTimer.update()
 				'Flush keyboard and mouse events
@@ -192,7 +192,7 @@ Type TScene Abstract
 	bbdoc: Initialize the scene.
 	about: Override this method and add initialization logic.
 	EndRem
-	Method init() Abstract
+	Method initialize() Abstract
 	
 	Rem
 	bbdoc: Update the scene.

@@ -19,7 +19,7 @@ Type TTweenTestScene Extends TScene
 	
 	Field testEntity:TEntity
 
-	Method Init() Override
+	Method initialize() Override
 	    ecs.addComponentType(POSITION_TYPE)
 		ecs.addComponentType(DRAWABLE_TYPE)
 		ecs.addComponentType(TWEENABLE_TYPE)

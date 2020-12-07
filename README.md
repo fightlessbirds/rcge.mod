@@ -9,7 +9,7 @@ SuperStrict
 Import rcge.game
 
 Type TMyScene Extends TScene
-	Method init() Override
+	Method initialize() Override
 	EndMethod
 	
 	Method update(dt:Float) Override

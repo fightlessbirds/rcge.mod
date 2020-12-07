@@ -10,7 +10,7 @@ Import rcge.game
 
 Type TTestSceneA Extends TScene
 	
-	Method init() Override
+	Method initialize() Override
 		Print("test init scene A")
 	EndMethod
 	
@@ -34,7 +34,7 @@ EndType
 
 Type TTestSceneB Extends TScene
 	
-	Method init() Override
+	Method initialize() Override
 		Print("test init scene B")
 	EndMethod
 	
