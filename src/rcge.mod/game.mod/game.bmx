@@ -109,6 +109,9 @@ Type TGame
 				scene.init()
 				'Update _deltaTimer between scene switches to avoid inflating deltaTime
 				_deltaTimer.update()
+				'Flush keyboard and mouse events
+				FlushKeys()
+				FlushMouse()
 				While scene.isFinished = False
 					If AppTerminate()
 						LogInfo("App terminate request recieved")
