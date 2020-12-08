@@ -75,6 +75,18 @@ Type TEcs
 	EndMethod
 	
 	Rem
+	bbdoc: Clear the system of all entities, relationships and events.
+	EndRem
+	Method clear()
+		_entities.clear()
+		_deadEntities.clear()
+		For Local relationship:TIntMap = EachIn _relationships.values()
+			relationship.clear()
+		Next
+		_eventDispatcher.removeAll()
+	EndMethod
+	
+	Rem
 	bbdoc: Add a component to an entity.
 	returns: The newly added component object.
 	about: Throws an exception if there is no entity with @entityId or if @cType has no matching component type.
