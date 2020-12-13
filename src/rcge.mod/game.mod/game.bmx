@@ -43,7 +43,7 @@ Type TGame
 			_Instance = New TGame(screenW, screenH, fullscreen)
 			Return _Instance
 		EndIf
-		LogError("TGame.CreateGame(): Cannot instantiate multiple TGame objects")
+		Throw("TGame.CreateGame(): Cannot instantiate multiple TGame objects")
 	EndFunction
 	
 	Rem
@@ -52,9 +52,27 @@ Type TGame
 	EndRem
 	Function GetInstance:TGame()
 		If _Instance = Null
-			LogError("TGame.GetInstance(): No instance available")
+			Throw("TGame.GetInstance(): No instance available")
 		EndIf
 		Return _Instance
+	EndFunction
+	
+	Rem
+	bbdoc: Switch the running scene. Current scene is cleaned up.
+	EndRem
+	Function SwitchScene(sceneName:String)
+		If _Instance = Null
+			Throw("TGame.SwitchScene(): No TGame instance exists")
+		EndIf
+		_Instance.setNextScene(sceneName)
+		_Instance._currentScene.isFinished = True
+	EndFunction
+	
+	Rem
+	bbdoc: Stop the current running TGame instance.
+	EndRem
+	Function StopGame()
+		If _Instance Then _Instance.stop()
 	EndFunction
 	
 	Rem
