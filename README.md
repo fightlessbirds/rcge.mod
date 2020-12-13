@@ -54,10 +54,12 @@ Type TPosRect
 	Field w:Float
 	Field h:Float
 EndType
+Global POSRECT_TYPE:TTypeId = TTypeId.ForName("TPosRect")
 
 Type TEnemyMissile
 	'Empty components can be used as a sort of "tag" for certain entities.
 EndType
+Global ENEMYMISSILE_TYPE:TTypeId = TTypeId.ForName("TEnemyMissile")
 ```
 ##### Systems
 Systems contain the logic that is applied to a specific archetype.
