@@ -15,8 +15,8 @@ Type TEcs
 			Throw("TEcs.addSystem(): Null argument")
 		EndIf
 		Local sType:TTypeId = TTypeId.ForObject(system)
-		For Local i:TSystem = EachIn _systems
-			If TTypeId.ForObject(i) = sType
+		For Local s:TSystem = EachIn _systems
+			If TTypeId.ForObject(s) = sType
 				Throw("TEcs.addSystem(): Cannot add duplicate system " + sType.name())
 			EndIf
 		Next
