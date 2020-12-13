@@ -6,11 +6,12 @@ about: Game window and scene management.
 EndRem
 Module rcge.game
 
-ModuleInfo "Version: 0.2.2"
+ModuleInfo "Version: 0.2.3"
 ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: Added SwitchScene() and StopGame() convenience functions."
 ModuleInfo "History: 0.2.0"
 ModuleInfo "History: Scenes are added by type and instantiated by TGame internally."
 ModuleInfo "History: TGame handles initialization of Graphics."
