@@ -148,7 +148,7 @@ Type TEcs
 		For Local i:Int = 1 Until Len(archetype)
 			Local relationship:TIntMap = TIntMap(_relationships.valueForKey(archetype[i]))
 			If relationship = Null
-				Throw("TEcs.queryStrict(): Undefined component " + archetype[i].name())
+				Throw("TEcs.query(): Undefined component " + archetype[i].name())
 			EndIf
 			For Local e:TEntity = EachIn resultList
 				If Not relationship.contains(e._id)
@@ -266,7 +266,7 @@ Type TEcs
 	
 	Field _entities:TIntMap = New TIntMap()
 	
-	Field _nextEntityId:Int = 0
+	Field _nextEntityId:Int = 1
 	
 	Field _deadEntities:TObjectList = New TObjectList()
 	
