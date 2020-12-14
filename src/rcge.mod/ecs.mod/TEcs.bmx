@@ -151,9 +151,7 @@ Type TEcs
 				Throw("TEcs.query(): Undefined component " + archetype[i].name())
 			EndIf
 			For Local e:TEntity = EachIn resultList
-				If Not relationship.contains(e._id)
-					resultList.remove(e)
-				EndIf
+				If Not relationship.contains(e._id) Then resultList.remove(e)
 			Next
 		Next
 		Return _ObjectListToEntityArray(resultList)
@@ -172,8 +170,11 @@ Type TEcs
 		EndIf
 		Local resultList:TObjectList = _query(archetype[0])
 		For Local i:Int = 1 Until Len(archetype)
-			Local compareList:TObjectList = _query(archetype[i])
-			For Local e:TEntity = EachIn compareList
+			Local relationship:TIntMap = TIntMap(_relationships.valueForKey(archetype[i]))
+			If relationship = Null
+				Throw("TEcs.query(): Undefined component " + archetype[i].name())
+			EndIf
+			For Local e:TEntity = EachIn relationship.values()
 				If Not resultList.contains(e) Then resultList.addLast(e)
 			Next
 		Next
@@ -285,7 +286,7 @@ Type TEcs
 	Method _query:TObjectList(cType:TTypeId)
 		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cType))
 		If relationship = Null
-			Throw("TEcs.query(): Undefined component " + cType.name())
+			Throw("TEcs._query(): Undefined component " + cType.name())
 		EndIf
 		Local resultList:TObjectList = New TObjectList()
 		For Local e:TEntity = EachIn relationship.values()
