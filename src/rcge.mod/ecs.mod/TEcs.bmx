@@ -22,6 +22,7 @@ Type TEcs
 		Next
 		_systems.addLast(system)
 		system.addNotify(Self)
+		LogInfo("ECS added system: " + sType.name())
 	EndMethod
 	
 	Rem
@@ -35,6 +36,7 @@ Type TEcs
 		EndIf
 		_componentTypes.addLast(cType)
 		_relationships.insert(cType, New TIntMap())
+		LogInfo("ECS added component: " + cType.name())
 	EndMethod
 	
 	Rem
@@ -84,6 +86,7 @@ Type TEcs
 			relationship.clear()
 		Next
 		_eventDispatcher.removeAll()
+		LogInfo("ECS cleared all entities")
 	EndMethod
 	
 	Rem

@@ -11,6 +11,7 @@ ModuleInfo "Author: fightlessbirds"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2020 fightlessbirds"
 
+ModuleInfo "History: TEcs.clear() for quickly destroying all entities."
 ModuleInfo "History: Added TIntervalSystem class which supports updating entities at set time intervals."
 ModuleInfo "History: 0.3.0"
 ModuleInfo "History: Added an event dispatcher to TEcs. Event listeners can be added, removed and triggered with optional context data."
