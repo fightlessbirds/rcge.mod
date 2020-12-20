@@ -5,6 +5,11 @@ EndRem
 Type TSystem Abstract
 
 	Rem
+	bbdoc: Whether the system should be updated.
+	EndRem
+	Field isActive:Int = True
+	
+	Rem
 	bbdoc: Get the archetype for the system.
 	about: Override this function to return an array of component types.
 		The component types must be the same as provided by TTypeId.name().

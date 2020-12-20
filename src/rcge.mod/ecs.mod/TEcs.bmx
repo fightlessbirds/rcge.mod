@@ -182,6 +182,16 @@ Type TEcs
 	EndMethod
 	
 	Rem
+	bbdoc: Set whether a system should be updated.
+	EndRem
+	Method setSystemActive(systemName:String, isActive:Int)
+		Local systemType:TTypeId = TTypeId.ForName(systemName)
+		For Local system:TSystem = EachIn _systems
+			If TTypeId.ForObject(system) = systemType Then system.isActive = isActive
+		Next
+	EndMethod
+	
+	Rem
 	bbdoc: Add an event listener to the ECS event dispatcher.
 	EndRem
 	Method addEventListener(listener:IEventListener)
@@ -217,6 +227,7 @@ Type TEcs
 	Method update(deltaTime:Float)
 		Local profilerStartMillis:Int
 		For Local system:TSystem = EachIn _systems
+			If Not system.isActive Then Continue
 			Try
 				If isProfilingEnabled Then profilerStartMillis = MilliSecs()
 				
