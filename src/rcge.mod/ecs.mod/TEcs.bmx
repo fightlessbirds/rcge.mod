@@ -237,7 +237,6 @@ Type TEcs
 				'Check for TIntervalSystem
 				Local intervalSystem:TIntervalSystem = TIntervalSystem(system)
 				If intervalSystem
-					intervalSystem = TIntervalSystem(system)
 					intervalSystem.addTime(deltaTime)
 					If intervalSystem.time < intervalSystem.GetInterval()
 						Continue
@@ -252,13 +251,11 @@ Type TEcs
 				Else
 					entities = query(archetype)
 				EndIf
-				If Len(entities)
-					If intervalSystem
-						intervalSystem.update(entities, intervalSystem.time)
-						intervalSystem.resetTime()
-					Else
-						system.update(entities, deltaTime)
-					EndIf
+				If intervalSystem
+					intervalSystem.update(entities, intervalSystem.time)
+					intervalSystem.resetTime()
+				Else
+					system.update(entities, deltaTime)
 				EndIf
 				_isUpdating = False
 				
