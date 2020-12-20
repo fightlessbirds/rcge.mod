@@ -42,6 +42,7 @@ Type TGame
 	Function CreateGame:TGame(screenW:Int, screenH:Int, fullscreen:Int=False)
 		If _Instance = Null
 			_Instance = New TGame(screenW, screenH, fullscreen)
+			LogInfo("Created TGame object")
 			Return _Instance
 		EndIf
 		Throw("TGame.CreateGame(): Cannot instantiate multiple TGame objects")
