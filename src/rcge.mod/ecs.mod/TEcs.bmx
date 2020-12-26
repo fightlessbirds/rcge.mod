@@ -193,9 +193,9 @@ Type TEcs
 			If TTypeId.ForObject(system) = systemType
 				system.isActive = isActive
 				If isActive
-					LogInfo("Activated system: " + systemName)
+					LogInfo("ECS activated system: " + systemName)
 				Else
-					LogInfo("Deactivated system: " + systemName)
+					LogInfo("ECS deactivated system: " + systemName)
 				EndIf
 				Return
 			EndIf
