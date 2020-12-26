@@ -190,7 +190,15 @@ Type TEcs
 	Method setSystemActive(systemName:String, isActive:Int)
 		Local systemType:TTypeId = TTypeId.ForName(systemName)
 		For Local system:TSystem = EachIn _systems
-			If TTypeId.ForObject(system) = systemType Then system.isActive = isActive
+			If TTypeId.ForObject(system) = systemType
+				system.isActive = isActive
+				If isActive
+					LogInfo("Activated system: " + systemName)
+				Else
+					LogInfo("Deactivated system: " + systemName)
+				EndIf
+				Return
+			EndIf
 		Next
 	EndMethod
 	
