@@ -76,7 +76,7 @@ Type TEnemyMissileSystem Extends TSystem
 	
 	'Archetypes allow systems to say which entities they care about.
 	Function GetArchetype:TTypeId[]() Override
-		Return [ENEMY_MISSILE_ARCHETYPE]
+		Return ENEMY_MISSILE_ARCHETYPE
 	EndFunction
 EndType
 ```
