@@ -7,9 +7,9 @@ EndRem
 Module rcge.ecs
 
 ModuleInfo "Version: 0.3.1"
-ModuleInfo "Author: fightlessbirds"
+ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
-ModuleInfo "Copyright: 2020 fightlessbirds"
+ModuleInfo "Copyright: 2021 Jason Gosen"
 
 ModuleInfo "History: TEcs.clear() for quickly destroying all entities."
 ModuleInfo "History: Added TIntervalSystem class which supports updating entities at set time intervals."
@@ -36,6 +36,7 @@ Import BRL.Reflection
 Import rcge.event
 Import rcge.logger
 Import rcge.pool
+Import rcge.datatypes
 
 Include "TEntity.bmx"
 Include "TSystem.bmx"

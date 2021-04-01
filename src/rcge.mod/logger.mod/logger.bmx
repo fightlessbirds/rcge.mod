@@ -1,6 +1,17 @@
 SuperStrict
 
+Rem
+bbdoc: Logging functions
+EndRem
 Module rcge.logger
+
+ModuleInfo "Version: 0.1.0"
+ModuleInfo "Author: Jason Gosen"
+ModuleInfo "License: MIT"
+ModuleInfo "Copyright: 2021 Jason Gosen"
+
+ModuleInfo "History: 0.1.0"
+ModuleInfo "History: Initial Release"
 
 Import BRL.StandardIO
 Import BRL.StringBuilder
@@ -38,7 +49,7 @@ Function TimestampConvert:TStringBuilder(timeMilliseconds:Int)
 	Local seconds:Int = ((timeMilliseconds - milliseconds) / 1000) Mod 60
 	Local minutes:Int = ((((timeMilliseconds - milliseconds) / 1000) - seconds) / 60) Mod 60
 	Local hours:Int = (((((timeMilliseconds - milliseconds) / 1000) - seconds) / 60) - minutes) / 60
-	Local timestamp:TStringBuilder = new TStringBuilder()
+	Local timestamp:TStringBuilder = New TStringBuilder()
 	timestamp.append(hours)
 	
 	If minutes < 10
