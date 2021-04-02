@@ -3,25 +3,18 @@
 	"tasks": [
 		{
 			"type": "bmx",
-			"source": "",
-			"output": "",
-			"make": "makeapp",
-			"app": "console",
-			"arch": "auto",
-			"platform": "auto",
-			"threaded": true,
-			"debug": true,
-			"execute": false,
-			"quick": false,
-			"verbose": false,
-			"problemMatcher": [
-				"$blitzmax"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"gdb": false
+			"label": "BlitzMax: Default",
+			"detail": "Automatically generated BlitzMax task",
+			"funcargcasting": "warning",
+			"make": "application",
+			"apptype": "gui",
+			"source": "${file}",
+			"fullcompile": true,
+			"quick": true,
+			"hidpi": false,
+			"architecture": "x64",
+			"target": "win32",
+			"debug": true
 		}
 	]
 }
