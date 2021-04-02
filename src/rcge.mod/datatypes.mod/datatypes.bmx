@@ -17,6 +17,10 @@ ModuleInfo "History: Initial Release"
 Type TByte
 	Field value:Byte
 	
+	Method New(value:Byte)
+		Self.value = value
+	EndMethod
+
 	Method toString:String()
 		Return String(value)
 	EndMethod
@@ -29,6 +33,10 @@ EndType
 Type TShort
 	Field value:Short
 	
+	Method New(value:Short)
+		Self.value = value
+	EndMethod
+
 	Method toString:String()
 		Return String(value)
 	EndMethod
@@ -40,6 +48,10 @@ EndType
 
 Type TInt
 	Field value:Int
+	
+	Method New(value:Int)
+		Self.value = value
+	EndMethod
 	
 	Method toString:String()
 		Return String(value)
@@ -53,6 +65,10 @@ EndType
 Type TUInt
 	Field value:UInt
 	
+	Method New(value:UInt)
+		Self.value = value
+	EndMethod
+	
 	Method toString:String()
 		Return String(value)
 	EndMethod
@@ -64,6 +80,10 @@ EndType
 
 Type TLong
 	Field value:Long
+	
+	Method New(value:Long)
+		Self.value = value
+	EndMethod
 	
 	Method toString:String()
 		Return String(value)
@@ -77,6 +97,10 @@ EndType
 Type TULong
 	Field value:ULong
 	
+	Method New(value:ULong)
+		Self.value = value
+	EndMethod
+	
 	Method toString:String()
 		Return String(value)
 	EndMethod
@@ -88,6 +112,10 @@ EndType
 
 Type TFloat
 	Field value:Float
+	
+	Method New(value:Float)
+		Self.value = value
+	EndMethod
 	
 	Method toString:String()
 		Return String(value)
@@ -101,6 +129,10 @@ EndType
 Type TDouble
 	Field value:Double
 	
+	Method New(value:Double)
+		Self.value = value
+	EndMethod
+	
 	Method toString:String()
 		Return String(value)
 	EndMethod
@@ -112,6 +144,10 @@ EndType
 
 Type TString
 	Field value:String
+	
+	Method New(value:String)
+		Self.value = value
+	EndMethod
 	
 	Method toString:String()
 		Return String(value)
