@@ -390,17 +390,20 @@ Type TSystemProfiler
 		Print("~nProfiler Output")
 		Print("Reported total update millis: " + millisSum)
 		For Local system:TSystem = EachIn ecs._systems
-			Local ms:Int = TInt(profilerData.valueForKey(system)).value
+			Local ms:TInt = TInt(profilerData.valueForKey(system))
 			'Avoid running the profile on first game update.
-			Local output:TStringBuilder = New TStringBuilder()
-			output.append(TTypeId.ForObject(system).name())
-			output.append(" update millis:")
-			output.append(ms)
-			output.append(" (%")
-			output.append(Int((Float(ms) / millisSum) * 100))
-			output.append(")")
-			If ms Then LogInfo(output.toString())
+			If ms
+				Local output:TStringBuilder = New TStringBuilder()
+				output.append(TTypeId.ForObject(system).name())
+				output.append(" update millis:")
+				output.append(ms)
+				output.append(" (%")
+				output.append(Int((Float(ms.value) / millisSum) * 100))
+				output.append(")")
+				LogInfo(output.toString())
+			EndIf
 		Next
+		Print("~n")
 	EndMethod
 EndType
 
