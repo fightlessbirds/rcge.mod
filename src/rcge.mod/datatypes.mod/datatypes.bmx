@@ -21,11 +21,11 @@ Type TByte
 		Self.value = value
 	EndMethod
 
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TByte(withObject).value
 	EndMethod
 EndType
@@ -37,11 +37,11 @@ Type TShort
 		Self.value = value
 	EndMethod
 
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TShort(withObject).value
 	EndMethod
 EndType
@@ -53,11 +53,11 @@ Type TInt
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TInt(withObject).value
 	EndMethod
 EndType
@@ -69,11 +69,11 @@ Type TUInt
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TUInt(withObject).value
 	EndMethod
 EndType
@@ -85,11 +85,11 @@ Type TLong
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TLong(withObject).value
 	EndMethod
 EndType
@@ -101,11 +101,11 @@ Type TULong
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TULong(withObject).value
 	EndMethod
 EndType
@@ -117,11 +117,11 @@ Type TFloat
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TFloat(withObject).value
 	EndMethod
 EndType
@@ -133,11 +133,11 @@ Type TDouble
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		Return value - TDouble(withObject).value
 	EndMethod
 EndType
@@ -149,11 +149,11 @@ Type TString
 		Self.value = value
 	EndMethod
 	
-	Method toString:String()
+	Method toString:String() Override
 		Return String(value)
 	EndMethod
 	
-	Method compare:Int(withObject:Object)
+	Method compare:Int(withObject:Object) Override
 		If value < TString(withObject).value Then Return -1
 		If value > TString(withObject).value Then Return 1
 		Return 0

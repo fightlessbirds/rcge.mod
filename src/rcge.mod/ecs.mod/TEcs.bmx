@@ -270,13 +270,13 @@ Type TEcs
 				_componentOperationBuffer.flush()
 				_clearDeadEntities()
 				If isProfilingEnabled
-					Local updateTookMillis:Int = MilliSecs() - profilerStartMillis
-					LogInfo(TTypeId.ForObject(system).name() + " updated in ms: " + updateTookMillis)
+					_systemProfiler.addTime(system, MilliSecs() - profilerStartMillis)
 				EndIf
 			Catch ex:Object
 				Throw("TEcs.update(): Error updating system " + TTypeId.ForObject(system).name() + ": " + ex.toString())
 			EndTry
 		Next
+		If isProfilingEnabled Then _systemProfiler.update(deltaTime)
 	EndMethod
 	
 	
@@ -300,6 +300,8 @@ Type TEcs
 	Field _systems:TList = New TList()
 	
 	Field _eventDispatcher:TEventDispatcher = New TEventDispatcher()
+	
+	Field _systemProfiler:TSystemProfiler = New TSystemProfiler(Self)
 	
 	'Private version of query() that returns a TListObject rather than an array
 	Method _query:TObjectList(cType:TTypeId)
@@ -344,3 +346,63 @@ Type TEcs
 	EndFunction
 
 EndType
+
+
+Private
+
+'Simple profiler that accumulates time spent inside each system and prints the information
+'to the console.
+Type TSystemProfiler
+	Field ecs:TEcs
+	Field timeSinceOutput:Float
+	Field millisSum:Int
+	Field profilerData:TMap = New TMap()
+	
+	Method New(parent:TEcs)
+		Self.ecs = parent
+	EndMethod
+	
+	'Increment the profiler's internal timer. If the threshold has been reached then 
+	'profiler data is printed to the console and flushed, and the timer is reset.
+	Method update(deltaTime:Float)
+		timeSinceOutput :+ deltaTime
+		If timeSinceOutput >= 1.0
+			printData()
+			profilerData.clear()
+			timeSinceOutput = 0.0
+			millisSum = 0
+		EndIf
+	EndMethod
+	
+	'Add time data for a system.
+	Method addTime(system:TSystem, timeMillis:Int)
+		Local data:TInt = TInt(profilerData.valueForKey(system))
+		If data = Null
+			data = New TInt()
+			profilerData.insert(system, data)
+		EndIf
+		data.value :+ timeMillis
+		millisSum :+ timeMillis
+	EndMethod
+	
+	Method printData()
+		'TODO: print the data for all systems
+		Print("~nProfiler Output")
+		Print("Reported total update millis: " + millisSum)
+		For Local system:TSystem = EachIn ecs._systems
+			Local ms:Int = TInt(profilerData.valueForKey(system)).value
+			'Avoid running the profile on first game update.
+			Local output:TStringBuilder = New TStringBuilder()
+			output.append(TTypeId.ForObject(system).name())
+			output.append(" update millis:")
+			output.append(ms)
+			output.append(" (%")
+			output.append(Int((Float(ms) / millisSum) * 100))
+			output.append(")")
+			If ms Then LogInfo(output.toString())
+		Next
+	EndMethod
+EndType
+
+
+Public
