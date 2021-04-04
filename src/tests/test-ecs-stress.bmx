@@ -17,6 +17,8 @@ Const SCREEN_WIDTH:Int = 800
 Const SCREEN_HEIGHT:Int = 600
 Global TestImage:TImage = LoadImage("test-image.png")
 
+Global EntityCount:Int = 0
+
 Type TPosition
 	Field x:Float
 	Field y:Float
@@ -85,6 +87,7 @@ Type TKillSystem Extends TSystem
 			For Local e:TEntity = EachIn entities
 				e.kill()
 			Next
+			EntityCount = 0
 		EndIf
 	EndMethod
 	
@@ -96,6 +99,9 @@ EndType
 Type TTestScene Extends TScene
 	
 	Field ecs:TEcs = New TEcs()
+	
+	Field fps:Int = 0
+	Field timeSinceFpsUpdate:Float = 0.0
 
 	Method initialize() Override
 		ecs.isProfilingEnabled = True
@@ -111,11 +117,19 @@ Type TTestScene Extends TScene
 		If KeyHit(Key_Escape) Then TGame.GetInstance().stop()
 		If KeyHit(Key_Space)
 			'add some test entities
-			For Local i:Int = 0 Until 100
+			For Local i:Int = 0 Until 1000
 				addTestEntity()
 			Next
+			EntityCount :+ 1000
 		EndIf
 		ecs.update(deltaTime)
+		timeSinceFpsUpdate :+ deltaTime
+		If timeSinceFpsUpdate > 1.0
+			fps = 1.0 / deltaTime
+			timeSinceFpsUpdate = 0.0
+		EndIf
+		DrawText("FPS: " + fps, 600, 20)
+		DrawText("Entity count: " + EntityCount, 600, 40)
 	EndMethod
 	
 	Method render() Override
