@@ -7,9 +7,9 @@ EndRem
 Module rcge.game
 
 ModuleInfo "Version: 0.2.3"
-ModuleInfo "Author: fightlessbirds"
+ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
-ModuleInfo "Copyright: 2020 fightlessbirds"
+ModuleInfo "Copyright: 2020 Jason Gosen"
 
 ModuleInfo "History: Added SwitchScene() and StopGame() convenience functions."
 ModuleInfo "History: 0.2.0"

@@ -6,11 +6,12 @@ about: Object wrappers for primitive data types.
 EndRem
 Module rcge.datatypes
 
-ModuleInfo "Version: 0.1.0"
+ModuleInfo "Version: 0.1.1"
 ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2021 Jason Gosen"
 
+ModuleInfo "History: Added New(), toString(), compare() methods.
 ModuleInfo "History: 0.1.0"
 ModuleInfo "History: Initial Release"
 

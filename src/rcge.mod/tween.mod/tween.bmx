@@ -9,10 +9,11 @@ EndRem
 Module rcge.tween
 
 ModuleInfo "Version: 1.0.1"
-ModuleInfo "Author: Sophie Kirschner (sophiek@pineapplemachine.com)"
+ModuleInfo "Author: Jason Gosen, Sophie Kirschner (sophiek@pineapplemachine.com)"
 ModuleInfo "License: Public Domain"
-ModuleInfo "Copyright: 2020 Sophie Kirschner"
+ModuleInfo "Copyright: 2021 Jason Gosen"
 
+ModuleInfo "History: Style changes"
 ModuleInfo "History: 1.0.0"
 ModuleInfo "History: Initial Release"
 
