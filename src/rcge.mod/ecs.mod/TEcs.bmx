@@ -398,7 +398,11 @@ Type TSystemProfiler
 				output.append(" update millis:")
 				output.append(ms)
 				output.append(" (%")
-				output.append(Int((Float(ms.value) / millisSum) * 100))
+				If ms.value = 0
+					output.append(0)
+				Else
+					output.append(Int((Float(ms.value) / millisSum) * 100))
+				EndIf
 				output.append(")")
 				LogInfo(output.toString())
 			EndIf
