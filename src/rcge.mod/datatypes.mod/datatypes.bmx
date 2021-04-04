@@ -11,7 +11,7 @@ ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2021 Jason Gosen"
 
-ModuleInfo "History: Added New(), toString(), compare() methods.
+ModuleInfo "History: Added New(), toString(), compare() methods."
 ModuleInfo "History: 0.1.0"
 ModuleInfo "History: Initial Release"
 
