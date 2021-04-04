@@ -6,9 +6,9 @@ EndRem
 Module rcge.event
 
 ModuleInfo "Version: 1.0.0"
-ModuleInfo "Author: fightlessbirds"
+ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
-ModuleInfo "Copyright: 2020 fightlessbirds"
+ModuleInfo "Copyright: 2020 Jason Gosen"
 
 ModuleInfo "History: 1.0.0"
 ModuleInfo "History: Initial Release"
