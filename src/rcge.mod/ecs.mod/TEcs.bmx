@@ -61,7 +61,7 @@ Type TEcs
 	Method createEntity:TEntity(archetype:TTypeId[])
 		Local e:TEntity = createEntity()
 		For Local cType:TTypeId = EachIn archetype
-			bind(e._id, cType)
+			bind(e, cType)
 		Next
 		Return e
 	EndMethod
@@ -92,20 +92,19 @@ Type TEcs
 	Rem
 	bbdoc: Add a component to an entity.
 	returns: The newly added component object.
-	about: Throws an exception if there is no entity with @entityId or if @cType has no matching component type.
+	about: Throws an exception if @cType has no matching component type.
 	EndRem
-	Method bind:Object(entityId:Int, cType:TTypeId)
+	Method bind:Object(entity:TEntity, cType:TTypeId)
 		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cType))
 		If relationship = Null
 			Throw("TEcs.bind(): Can not bind unknown component type " + cType.name())
 		EndIf
-		Local e:TEntity = getEntity(entityId)
 		Local c:Object = cType.newObject()
 		If _isUpdating
-			_componentOperationBuffer.enqueueBind(relationship, e, cType, c)
+			_componentOperationBuffer.enqueueBind(relationship, entity, cType, c)
 		Else
-			e._components.insert(cType, c)
-			relationship.insert(entityId, e)
+			entity._components.insert(cType, c)
+			relationship.insert(entity.getId(), entity)
 		EndIf
 		Return c
 	EndMethod

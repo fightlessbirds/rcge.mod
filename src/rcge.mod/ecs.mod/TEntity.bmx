@@ -44,7 +44,7 @@ Type TEntity
 	about: Throws an exception if there is no component for @cType.
 	EndRem
 	Method bind:Object(cType:TTypeId)
-		Return _ecs.bind(_id, cType)
+		Return _ecs.bind(Self, cType)
 	EndMethod
 	
 	Rem
