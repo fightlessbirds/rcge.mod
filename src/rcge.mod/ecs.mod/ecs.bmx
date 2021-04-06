@@ -6,11 +6,12 @@ about: An object-oriented entity component system.
 EndRem
 Module rcge.ecs
 
-ModuleInfo "Version: 0.3.2"
+ModuleInfo "Version: 0.3.3"
 ModuleInfo "Author: Jason Gosen"
 ModuleInfo "License: MIT"
 ModuleInfo "Copyright: 2021 Jason Gosen"
 
+ModuleInfo "History: TEntity.bind(Object) added for binding existing component objects."
 ModuleInfo "History: Improved system profiler."
 ModuleInfo "History: TEcs.clear() for quickly destroying all entities."
 ModuleInfo "History: Added TIntervalSystem class which supports updating entities at set time intervals."

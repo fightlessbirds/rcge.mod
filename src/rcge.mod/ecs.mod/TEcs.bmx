@@ -94,12 +94,17 @@ Type TEcs
 	returns: The newly added component object.
 	about: Throws an exception if @cType has no matching component type.
 	EndRem
-	Method bind:Object(entity:TEntity, cType:TTypeId)
+	Method bind:Object(entity:TEntity, cType:TTypeId, obj:Object=Null)
 		Local relationship:TIntMap = TIntMap(_relationships.valueForKey(cType))
 		If relationship = Null
 			Throw("TEcs.bind(): Can not bind unknown component type " + cType.name())
 		EndIf
-		Local c:Object = cType.newObject()
+		Local c:Object
+		If obj
+			c = obj
+		Else
+			c = cType.newObject()
+		EndIf
 		If _isUpdating
 			_componentOperationBuffer.enqueueBind(relationship, entity, cType, c)
 		Else
@@ -107,6 +112,10 @@ Type TEcs
 			relationship.insert(entity.getId(), entity)
 		EndIf
 		Return c
+	EndMethod
+	
+	Method bind(entity:TEntity, obj:Object)
+		bind(entity, TTypeId.ForObject(obj), obj)
 	EndMethod
 	
 	Rem
