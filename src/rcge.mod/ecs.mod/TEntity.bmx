@@ -51,8 +51,8 @@ Type TEntity
 	bbdoc: Add an existing component object to the entity.
 	about: Throws and exception if the component type is invalid.
 	EndRem
-	Method bind(obj:Object)
-		_ecs.bind(Self, obj)
+	Method bindObj(obj:Object)
+		_ecs.bindObj(Self, obj)
 	EndMethod
 	
 	Rem

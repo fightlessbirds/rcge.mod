@@ -114,7 +114,11 @@ Type TEcs
 		Return c
 	EndMethod
 	
-	Method bind(entity:TEntity, obj:Object)
+	Rem
+	bbdoc: Add an existing component object to the entity.
+	about: Throws and exception if the component type is invalid.
+	EndRem
+	Method bindObj(entity:TEntity, obj:Object)
 		bind(entity, TTypeId.ForObject(obj), obj)
 	EndMethod
 	
